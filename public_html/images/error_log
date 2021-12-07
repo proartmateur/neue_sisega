@@ -1,0 +1,24 @@
+[22-Sep-2021 14:05:38 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function ereg() in /home1/sisegaapp/public_html/images/alx.php:9
+Stack trace:
+#0 {main}
+  thrown in /home1/sisegaapp/public_html/images/alx.php on line 9
+[22-Sep-2021 14:05:39 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function ereg() in /home1/sisegaapp/public_html/images/alx.php:9
+Stack trace:
+#0 {main}
+  thrown in /home1/sisegaapp/public_html/images/alx.php on line 9
+[22-Sep-2021 14:05:40 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function ereg() in /home1/sisegaapp/public_html/images/alx.php:9
+Stack trace:
+#0 {main}
+  thrown in /home1/sisegaapp/public_html/images/alx.php on line 9
+[22-Sep-2021 14:05:41 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function ereg() in /home1/sisegaapp/public_html/images/alx.php:9
+Stack trace:
+#0 {main}
+  thrown in /home1/sisegaapp/public_html/images/alx.php on line 9
+[22-Sep-2021 14:05:41 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function ereg() in /home1/sisegaapp/public_html/images/alx.php:9
+Stack trace:
+#0 {main}
+  thrown in /home1/sisegaapp/public_html/images/alx.php on line 9
+[22-Sep-2021 14:05:46 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function ereg() in /home1/sisegaapp/public_html/images/alx.php:9
+Stack trace:
+#0 {main}
+  thrown in /home1/sisegaapp/public_html/images/alx.php on line 9
