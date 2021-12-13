@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-//use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 //use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
@@ -89,14 +89,14 @@ class PayrollReport implements FromArray, ShouldAutoSize, WithStyles, WithColumn
         //return  $data = [];
     }
 
-    /*public function sheets(): array
-    {
-        $sheets = ['Reporte'];
-
-
-
-        return $sheets;
-    }*/
+//    public function sheets(): array
+//    {
+//        $sheets = ['Reporte'];
+//
+//
+//
+//        return $sheets;
+//    }
 
     public function styles(Worksheet $sheet)
     {
@@ -468,7 +468,6 @@ class PayrollReport implements FromArray, ShouldAutoSize, WithStyles, WithColumn
             'A' => 25,
         ];
     }
-
 
 
 
