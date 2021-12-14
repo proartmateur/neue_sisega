@@ -17,6 +17,7 @@ use App\Exports\PayrollReport;
 use App\Http\Requests\PayrollsRequest;
 use App\Payroll;
 use App\PublicWork;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
@@ -603,8 +604,13 @@ class PayrollsController extends Controller
 
     public function export_excel(Request $request)
     {
+        $date_range = $request['date_range_excel'];
+        $now = Carbon::now();
+        $week_init = $now->subDays(7);
+        if (is_null($date_range)) {
+            return "Debe seleccionar un rango de fechas";
+        }
 
-        //return $this->exportExcelTest();
         $dates = explode(" / ", $request['date_range_excel']);
         $start_date = explode("-", $dates[0]);
         $end_date = explode("-", $dates[1]);
@@ -612,10 +618,14 @@ class PayrollsController extends Controller
         $start = $start_date[2] . "-" . $start_date[1] . "-" . $start_date[0];
         $end = $end_date[2] . "-" . $end_date[1] . "-" . $end_date[0];
 
+        if ($start === $end) {
+            $start = $week_init->format('Y-m-d');
+        }
+
         $proyecto_name = 'GAP GDL';
 
-        if(!is_null($request['public_work_excel'])){
-            $public_work = PublicWork::find(['id'=>$request['public_work_excel']])->first();
+        if (!is_null($request['public_work_excel'])) {
+            $public_work = PublicWork::find(['id' => $request['public_work_excel']])->first();
             $proyecto_name = $public_work->name;
             return PayrollExcel::exportExcel($start, $end, $proyecto_name);
         }
@@ -792,6 +802,14 @@ class PayrollsController extends Controller
                 ->join('employees', 'employees.id', 'payrolls.employee_id')
                 ->join('public_works', 'public_works.id', 'payrolls.public_work_id')
                 ->whereBetween('payrolls.date', [$start, $end . ' 23:59:59'])->get();
+
+            $count_payrolls = count($payrolls);
+            if($count_payrolls === 0) {
+                $public_work = PublicWork::all()->first();
+                $proyecto_name = $public_work->name;
+                $proyecto_name = "Todos (0 registros)";
+                return PayrollExcel::exportExcel($start, $end, $proyecto_name);
+            }
 
             $array = [];
 
