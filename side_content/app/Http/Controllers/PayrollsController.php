@@ -634,301 +634,144 @@ class PayrollsController extends Controller
         // 2021-12-11
         $fileName = \Str::random(10) . "_" . time() . ".pdf";
 
-        if ($request['public_work_excel'] != '') {
-            $payrolls = Payroll::select('payrolls.id AS id', 'payrolls.days_worked', 'payrolls.hours_worked', 'payrolls.extra_hours',
-                'payrolls.total_salary', 'payrolls.date', 'employees.id as employee_id', 'public_works.id as public_work_id',
-                'public_works.name AS public_work', 'payrolls.comments')
-                ->join('employees', 'employees.id', 'payrolls.employee_id')
-                ->join('public_works', 'public_works.id', 'payrolls.public_work_id')
-                ->whereBetween('payrolls.date', [$start, $end . ' 23:59:59'])
-                ->where('payrolls.public_work_id', $request['public_work_excel'])->get();
-            logger("exportando excel...");
-            logger($payrolls[0]);
-            $array = [];
-
-            $data = [];
-
-//            array_push($data, ["Nombre completo"," ","Sueldo", "Horas extra","Bono",  "Total", "Obra", "Banco", "Cuenta", "CLABE","IMSS", "Tipo", "Firma", "Comentarios"]);
-            array_push($data, ["Nombre completo", " ", "Sueldo", "Horas extra", "Bono", "Total", "Obra", "Banco", "Cuenta", "CLABE", "IMSS", "Tipo", "Firma", "Comentarios"]);
-
-            $total_salarios = 0;
-            $nombre_obra = '';
-            foreach ($payrolls as $payroll) {
-                $employee = Employee::find($payroll->employee_id);
-
-                $actual_payroll = Payroll::find($payroll->id);
-                logger($actual_payroll);
-                logger("END ------------");
-                $total_bonus = 0;
-                foreach ($actual_payroll->Bonuses as $bonus) {
-                    $total_bonus += (int)$bonus->amount;
-                }
+        return $this->reporteTodosLosProyectos($start, $end);
+    }
 
 
-                if ($payroll->extra_hours != '') {
-                    $payroll_signo = $payroll->extra_hours;
-                    //$payroll_signo = "$".$payroll->extra_hours;
-                } else {
-                    $payroll_signo = $payroll->extra_hours;
-                }
+    private function reporteTodosLosProyectos($start, $end){
+        $payrolls = Payroll::select('payrolls.id AS id', 'payrolls.days_worked', 'payrolls.hours_worked', 'payrolls.extra_hours',
+            'payrolls.total_salary', 'payrolls.date', 'employees.id as employee_id', 'public_works.id as public_work_id',
+            'public_works.name AS public_work', 'payrolls.comments')
+            ->join('employees', 'employees.id', 'payrolls.employee_id')
+            ->join('public_works', 'public_works.id', 'payrolls.public_work_id')
+            ->whereBetween('payrolls.date', [$start, $end . ' 23:59:59'])->get();
+
+        $count_payrolls = count($payrolls);
+        if($count_payrolls === 0) {
+            $public_work = PublicWork::all()->first();
+            $proyecto_name = $public_work->name;
+            $proyecto_name = "Todos (0 registros)";
+            return PayrollExcel::exportExcel($start, $end, $proyecto_name);
+        }
+
+        $array = [];
+
+        $data = [];
+
+        array_push($data, ["Nombre completo", " ", "Sueldo", "Horas extra", "Bono", "Total", "Obra", "Banco", "Cuenta", "CLABE", "IMSS", "Tipo", "Firma", "Comentarios"]);
 
 
-                /* array_push($data, [
-                     $employee->name." ",
-                     "$".$total_bonus,
-                     $payroll_signo,
-                     "$".number_format(ceil($payroll->total_salary),'2','.',','),
-                     $payroll->public_work." ",
-                     $employee->bank." ",
-                     $employee->account." ",
-                     $employee->clabe." ",
-                     $employee->type == 1 ? 'Empleado' : 'Destajista',
-                     ""
-                 ]);*/
+        $total_salarios = 0;
+        $total_por_obra = [];
 
-                array_push($data, [
+        foreach ($payrolls as $payroll) {
+            $employee = Employee::find($payroll->employee_id);
 
-                    //$employee->photography." ",
-                    $employee->name . " ",/*' '.$e
-                    $employee->name." ",/*' '.$employee->last_name,*/
-                    " ",
-                    number_format($employee->salary_week, '2', '.', ''),
-                    $payroll_signo,
-                    number_format($total_bonus, '2', '.', ''),
+            $actual_payroll = Payroll::find($payroll->id);
 
-
-                    number_format(ceil($payroll->total_salary), '2', '.', ''),
-                    //"$".number_format(ceil($payroll->total_salary),'2','.',','),
-                    $payroll->public_work,
-                    $employee->bank . " ",
-                    $employee->account . " ",
-                    $employee->clabe . " ",
-                    $employee->imss_number . " ",
-                    $employee->type == 1 ? 'Empleado' : 'Destajista',
-                    "",
-                    $payroll->comments . " "
-                ]);
-
-                $total_salarios += number_format(ceil($payroll->total_salary), '2', '.', '');
-
-                $nombre_obra = $payroll->public_work . " ";
+            $total_bonus = 0;
+            foreach ($actual_payroll->Bonuses as $bonus) {
+                $total_bonus += (int)$bonus->amount;
             }
 
-
-            $aDia = substr($end, 8, 2);
-            $aMes = substr($end, 5, 2);
-            $aAnio = substr($end, 0, 4);
-
-            $aMeses = [
-                '01' => 'ENERO',
-                '02' => 'FEBRERO',
-                '03' => 'MARZO',
-                '04' => 'ABRIL',
-                '05' => 'MAYO',
-                '06' => 'JUNIO',
-                '07' => 'JULIO',
-                '08' => 'AGOSTO',
-                '09' => 'SEPTIEMBRE',
-                '10' => 'OCTUBRE',
-                '11' => 'NOVIEMBRE',
-                '12' => 'DICIEMBRE'
-            ];
-
-            $aCadena = 'NOMINA SEMANAL ' . $aDia . ' DE ' . $aMeses[$aMes] . ' DE ' . $aAnio;
-
-
-            array_unshift($data, [' ']);
-//            array_unshift($data, [
-//                'A ',
-//                'B',
-//                'C',
-//                'D',
-//                'E',
-//                'F',
-//                'G',
-//                'H',
-//                'I',
-//                'J',
-//                'K',
-//                'L',
-//                'M'
-//            ]);
-            array_unshift($data, [trim($nombre_obra) . "1--", "", number_format($total_salarios, '2', '.', ''), '', '', '', $aCadena . ' ']);
-
-
-            array_unshift($data, ['NOMINA SEMANAL ']);
-            array_unshift($data, [-1]);
+            if ($payroll->extra_hours != '') {
+                $payroll_signo = $payroll->extra_hours;
+                //$payroll_signo = "$".$payroll->extra_hours;
+            } else {
+                $payroll_signo = $payroll->extra_hours;
+            }
 
 
             /*array_push($data, [
-                    " ",
+                $employee->name.' '.$employee->last_name,
+                "$".$total_bonus,
+                $payroll_signo,
+                "$".number_format(ceil($payroll->total_salary),'2','.',','),
+                $payroll->public_work,
+                $employee->bank,
+                $employee->account,
+                $employee->clabe,
+                $employee->type == 1 ? 'Empleado' : 'Destajista',
+                ""
+            ]);*/
 
-                     " ",
-
-                    " ",
-                   number_format($total_salarios,'2','.',''),
-
-                    " ",
-                    " ",
-                    " ",
-                    " ",
-                   " ",
-                    ""
-                ]);*/
-
-            $export = new PayrollReport($data);
-            //$export->sheets([]);
-
-            /*$export->sheet->setColumnFormat(array(
-             'A' => '@',
-             'B' => '@',
-             'D' => '@',
-             'E' => '@',
-             'F' => '@',
-             'G' => '@',
-             'H' => '@',
-             'I' => '@',
-             'J' => '@',
-           ));*/
-
-            //$stored = Excel::store($export, '/Users/ennima/Devs/neue_studio/SISEGA/docker_laravel8_php8_apache/src/side_content/tests/Unit/Reporte.xlsx');
-            return Excel::download($export, 'Reporte.xlsx');
+            array_push($data, [
+                //$employee->photography." ",
+                $employee->name . "",/*' '.$employee->last_name,*/
+                " ",
+                number_format($employee->salary_week, '2', '.', ''),
+                $payroll_signo,
+                number_format($total_bonus, '2', '.', ''),
 
 
-        } else {
-            $payrolls = Payroll::select('payrolls.id AS id', 'payrolls.days_worked', 'payrolls.hours_worked', 'payrolls.extra_hours',
-                'payrolls.total_salary', 'payrolls.date', 'employees.id as employee_id', 'public_works.id as public_work_id',
-                'public_works.name AS public_work', 'payrolls.comments')
-                ->join('employees', 'employees.id', 'payrolls.employee_id')
-                ->join('public_works', 'public_works.id', 'payrolls.public_work_id')
-                ->whereBetween('payrolls.date', [$start, $end . ' 23:59:59'])->get();
+                number_format(ceil($payroll->total_salary), '2', '.', ''),
+                //"$".number_format(ceil($payroll->total_salary),'2','.',','),
+                $payroll->public_work . " ",
+                $employee->bank . " ",
+                $employee->account . " ",
+                $employee->clabe . " ",
+                $employee->imss_number . " ",
+                $employee->type == 1 ? 'Empleado' : 'Destajista',
+                "",
+                $payroll->comments . " "
+            ]);
 
-            $count_payrolls = count($payrolls);
-            if($count_payrolls === 0) {
-                $public_work = PublicWork::all()->first();
-                $proyecto_name = $public_work->name;
-                $proyecto_name = "Todos (0 registros)";
-                return PayrollExcel::exportExcel($start, $end, $proyecto_name);
-            }
+            /*$class = new \stdClass;
+            $class->full_name = $employee->name.' '.$employee->last_name;
+            $class->extra_hours = $payroll->extra_hours;
+            $class->salary = $employee->salary_week;
+            $class->public_work = $payroll->public_work;
+            $class->bank = $employee->bank;
+            $class->account = $employee->account;
+            $class->clabe = $employee->clabe;
 
-            $array = [];
+            $class->total_salary = "$".number_format(ceil($payroll->total_salary),'2','.',',');
+            $total += (float)$payroll->total_salary;
 
-            $data = [];
+            array_push($array, $class);*/
 
-            array_push($data, ["Nombre completo", " ", "Sueldo", "Horas extra", "Bono", "Total", "Obra", "Banco", "Cuenta", "CLABE", "IMSS", "Tipo", "Firma", "Comentarios"]);
+            $total_salarios += number_format(ceil($payroll->total_salary), '2', '.', '');
 
-
-            $total_salarios = 0;
-            $total_por_obra = [];
-
-            foreach ($payrolls as $payroll) {
-                $employee = Employee::find($payroll->employee_id);
-
-                $actual_payroll = Payroll::find($payroll->id);
-
-                $total_bonus = 0;
-                foreach ($actual_payroll->Bonuses as $bonus) {
-                    $total_bonus += (int)$bonus->amount;
-                }
-
-                if ($payroll->extra_hours != '') {
-                    $payroll_signo = $payroll->extra_hours;
-                    //$payroll_signo = "$".$payroll->extra_hours;
-                } else {
-                    $payroll_signo = $payroll->extra_hours;
-                }
-
-
-                /*array_push($data, [
-                    $employee->name.' '.$employee->last_name,
-                    "$".$total_bonus,
-                    $payroll_signo,
-                    "$".number_format(ceil($payroll->total_salary),'2','.',','),
-                    $payroll->public_work,
-                    $employee->bank,
-                    $employee->account,
-                    $employee->clabe,
-                    $employee->type == 1 ? 'Empleado' : 'Destajista',
-                    ""
-                ]);*/
-
-                array_push($data, [
-                    //$employee->photography." ",
-                    $employee->name . "",/*' '.$employee->last_name,*/
-                    " ",
-                    number_format($employee->salary_week, '2', '.', ''),
-                    $payroll_signo,
-                    number_format($total_bonus, '2', '.', ''),
-
-
-                    number_format(ceil($payroll->total_salary), '2', '.', ''),
-                    //"$".number_format(ceil($payroll->total_salary),'2','.',','),
-                    $payroll->public_work . " ",
-                    $employee->bank . " ",
-                    $employee->account . " ",
-                    $employee->clabe . " ",
-                    $employee->imss_number . " ",
-                    $employee->type == 1 ? 'Empleado' : 'Destajista',
-                    "",
-                    $payroll->comments . " "
-                ]);
-
-                /*$class = new \stdClass;
-                $class->full_name = $employee->name.' '.$employee->last_name;
-                $class->extra_hours = $payroll->extra_hours;
-                $class->salary = $employee->salary_week;
-                $class->public_work = $payroll->public_work;
-                $class->bank = $employee->bank;
-                $class->account = $employee->account;
-                $class->clabe = $employee->clabe;
-
-                $class->total_salary = "$".number_format(ceil($payroll->total_salary),'2','.',',');
-                $total += (float)$payroll->total_salary;
-
-                array_push($array, $class);*/
-
-                $total_salarios += number_format(ceil($payroll->total_salary), '2', '.', '');
-
-                if (isset($total_por_obra[$payroll->public_work])) {
-                    $total_por_obra[$payroll->public_work] += number_format(ceil($payroll->total_salary), '2', '.', '');
-                } else {
-                    $total_por_obra[$payroll->public_work] = number_format(ceil($payroll->total_salary), '2', '.', '');
-                }
-
-
+            if (isset($total_por_obra[$payroll->public_work])) {
+                $total_por_obra[$payroll->public_work] += number_format(ceil($payroll->total_salary), '2', '.', '');
+            } else {
+                $total_por_obra[$payroll->public_work] = number_format(ceil($payroll->total_salary), '2', '.', '');
             }
 
 
-            $aDia = substr($end, 8, 2);
-            $aMes = substr($end, 5, 2);
-            $aAnio = substr($end, 0, 4);
-
-            $aMeses = ['01' => 'ENERO',
-                '02' => 'FEBRERO',
-                '03' => 'MARZO',
-                '04' => 'ABRIL',
-                '05' => 'MAYO',
-                '06' => 'JUNIO',
-                '07' => 'JULIO',
-                '08' => 'AGOSTO',
-                '09' => 'SEPTIEMBRE',
-                '10' => 'OCTUBRE',
-                '11' => 'NOVIEMBRE',
-                '12' => 'DICIEMBRE'];
-
-            $aCadena = 'NOMINA SEMANAL ' . $aDia . ' DE ' . $aMeses[$aMes] . ' DE ' . $aAnio;
-
-            array_unshift($data, [' ']);
-            array_unshift($data, ["TOTAL ", "", number_format($total_salarios, '2', '.', ''), '', '', '', '', $aCadena . ' ']);
-            //array_unshift($data, ['NOMINA SEMANAL ']);
-            array_unshift($data, [count($total_por_obra), $total_por_obra]);
-
-            // Aquí se genera el excel
-            $export = new PayrollReport($data);
-
-            return Excel::download($export, 'Reporte.xlsx');
         }
+
+
+        $aDia = substr($end, 8, 2);
+        $aMes = substr($end, 5, 2);
+        $aAnio = substr($end, 0, 4);
+
+        $aMeses = ['01' => 'ENERO',
+            '02' => 'FEBRERO',
+            '03' => 'MARZO',
+            '04' => 'ABRIL',
+            '05' => 'MAYO',
+            '06' => 'JUNIO',
+            '07' => 'JULIO',
+            '08' => 'AGOSTO',
+            '09' => 'SEPTIEMBRE',
+            '10' => 'OCTUBRE',
+            '11' => 'NOVIEMBRE',
+            '12' => 'DICIEMBRE'];
+
+        $aCadena = 'NOMINA SEMANAL ' . $aDia . ' DE ' . $aMeses[$aMes] . ' DE ' . $aAnio;
+
+        array_unshift($data, [' ']);
+        array_unshift($data, ["TOTAL ", "", number_format($total_salarios, '2', '.', ''), '', '', '', '', $aCadena . ' ']);
+        //array_unshift($data, ['NOMINA SEMANAL ']);
+        array_unshift($data, [count($total_por_obra), $total_por_obra]);
+
+        // Aquí se genera el excel
+        $export = new PayrollReport($data);
+
+        return Excel::download($export, 'Reporte.xlsx');
     }
+
 
     private function total_bonus($bonuses)
     {
