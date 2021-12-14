@@ -576,7 +576,6 @@ class PayrollsController extends Controller
         $start = $date_range['start'];
         $end = $date_range['end'];
         //21
-        //$proyecto_name = 'GAP GDL';
 
         if (!is_null($request['public_work_excel'])) {
             $public_work = PublicWork::find(['id' => $request['public_work_excel']])->first();

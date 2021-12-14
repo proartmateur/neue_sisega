@@ -5,6 +5,7 @@ namespace App\Exports\ExcelReport;
 use App\Exports\PayrollExport;
 use App\Payroll;
 use Maatwebsite\Excel\Facades\Excel;
+use phpDocumentor\Reflection\Types\This;
 
 class PayrollExcel
 {
@@ -19,7 +20,12 @@ class PayrollExcel
             $start,
             $end
         );
-        $export = new PayrollExport($data['general'], $data['general_count']);
+
+        $general = $data['general'];
+        $destajistas = $data['destajistas'];
+        $empleados = $data['empleados'];
+
+        $export = new PayrollExport($general, $destajistas, $empleados);
         return Excel::download($export, "Reporte_$end-$public_work.xlsx");
     }
 
@@ -71,43 +77,31 @@ class PayrollExcel
     {
 
         $payrolls_items = [];
+        $destajistas = [];
+        $empleados = [];
 
-        $payroll = Payroll::select(
-            'payrolls.id AS id', 'payrolls.days_worked', 'payrolls.hours_worked',
-            'payrolls.extra_hours', 'payrolls.total_salary', 'payrolls.date',
-            'payrolls.comments',
-            'employees.id as employee_id', 'employees.name as employee_name',
-            'employees.salary_week as employee_salary_week', 'employees.bank as bank',
-            'employees.account as account', 'employees.clabe as clabe',
-            'employees.imss_number as imss_number',
-            'employees.type as employee_type', 'payrolls.extra_hours as extra_hours',
-            'public_works.id as public_work_id',
-            'public_works.name AS public_work', 'payrolls.comments'
-        )->join('employees', 'employees.id', 'payrolls.employee_id')
-            ->join('public_works', 'public_works.id', 'payrolls.public_work_id')
-            ->where('public_works.name', 'like', $proyecto_name)
-            ->whereBetween('payrolls.date', [$start, $end . ' 23:59:59'])->get();
+        $payroll = PayrollExcel::payrollData($start, $end, $proyecto_name);
 
         $count = 0;
         $total_salarios = 0;
+        $total_salarios_destajistas = 0;
+        $total_salarios_empleados = 0;
         foreach ($payroll as $pr) {
-//            $actual_payrol = Payroll::find($pr->id);
-//            $bonuses = $actual_payrol->Bonuses;
-            $b2 = $payroll[$count]->Bonuses;
-            $b3 = $pr->Bonuses;
+
+            $the_bonuses = $payroll[$count]->Bonuses;
             $total_bonus = 0;
-            if (count($b2) > 1) {
-                $op = $b2;
-                $total_bonus = PayrollExcel::total_bonus($b2);
+            if (count($the_bonuses) > 1) {
+
+                $total_bonus = PayrollExcel::total_bonus($the_bonuses);
                 if (is_null($total_bonus)) {
                     $total_bonus = 0;
                 }
-                $k = 0;
+
             }
-            $payroll_signo = $pr->extra_hours;
-            $proyecto = $pr->public_work;
+
             $total_salarios += $pr->total_salary;
 
+            //region Item
             $pr_item = new PayrollRow(
                 $pr->employee_name,
                 floatval($pr->employee_salary_week),
@@ -123,12 +117,34 @@ class PayrollExcel
                 "",
                 is_null($pr->comments) ? "" : $pr->comments
             );
+            //endregion
+
+            if ($pr_item->getTipo() === 'Destajista') {
+                $total_salarios_destajistas += $pr_item->getTotal();
+                $destajistas[] = $pr_item;
+            } else {
+                $total_salarios_empleados += $pr_item->getTotal();
+                $empleados[] = $pr_item;
+            }
             $payrolls_items[] = $pr_item;
             $count += 1;
         }
 
+        $destajistas_render = self::buildRenderArray($proyecto_name, $destajistas, $end);
+        $empleados_render = self::buildRenderArray($proyecto_name, $empleados, $end);
+        $general_render = self::buildRenderArray($proyecto_name, $payrolls_items, $end);
+        return [
+            'general' => $general_render,
+            'empleados' => $empleados_render,
+            'destajistas' => $destajistas_render
+        ];
+    }
+
+    private static function buildRenderArray(
+        string $proyecto_name, array $payrolls_items, string $end
+    )
+    {
         $fecha = PayrollExcel::dateSpanish($end);
-        $title = "NOMINA SEMANAL $fecha";
         $project = new PayrollProject(
             $proyecto_name, $payrolls_items
         );
@@ -142,6 +158,7 @@ class PayrollExcel
             ),
             $fecha
         );
+
         $hdata = $header->render();
 
         $table = new PayrollTable(
@@ -155,13 +172,31 @@ class PayrollExcel
         );
 
         $rows = $table->render();
-        foreach ($rows as $row){
+        foreach ($rows as $row) {
             $result[] = $row;
         }
         return [
-            'general' => $result,
-            'general_count' => $table->count()
+            'render' => $result,
+            'count' => $table->count()
         ];
     }
 
+    private static function payrollData(string $start, string $end, string $proyecto_name)
+    {
+        return Payroll::select(
+            'payrolls.id AS id', 'payrolls.days_worked', 'payrolls.hours_worked',
+            'payrolls.extra_hours', 'payrolls.total_salary', 'payrolls.date',
+            'payrolls.comments',
+            'employees.id as employee_id', 'employees.name as employee_name',
+            'employees.salary_week as employee_salary_week', 'employees.bank as bank',
+            'employees.account as account', 'employees.clabe as clabe',
+            'employees.imss_number as imss_number',
+            'employees.type as employee_type', 'payrolls.extra_hours as extra_hours',
+            'public_works.id as public_work_id',
+            'public_works.name AS public_work', 'payrolls.comments'
+        )->join('employees', 'employees.id', 'payrolls.employee_id')
+            ->join('public_works', 'public_works.id', 'payrolls.public_work_id')
+            ->where('public_works.name', 'like', $proyecto_name)
+            ->whereBetween('payrolls.date', [$start, $end . ' 23:59:59'])->get();
+    }
 }

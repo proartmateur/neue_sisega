@@ -10,25 +10,29 @@ class PayrollExport implements WithMultipleSheets
 
     use Exportable;
 
-    private array $data;
-    private int $general_rows;
+    private array $general;
+    private array $destajistas;
+    private array $empleados;
 
     /**
-     * @param $data
+     * @param array $general
+     * @param array $destajistas
+     * @param array $empleados
      */
-    public function __construct($data, int $general_rows)
+    public function __construct(array $general, array $destajistas, array $empleados)
     {
-        $this->data = $data;
-        $this->general_rows = $general_rows;
+        $this->general = $general;
+        $this->destajistas = $destajistas;
+        $this->empleados = $empleados;
     }
 
 
     public function sheets(): array
     {
         return [
-            new PyrollGeneralSheet('General', $this->data, $this->general_rows),
-            new PyrollGeneralSheet('Empleados', $this->data, $this->general_rows),
-            new PyrollGeneralSheet('Destajistas', $this->data, $this->general_rows),
+            new PyrollGeneralSheet('General', $this->general['render'], $this->general['count']),
+            new PyrollGeneralSheet('Empleados',$this->empleados['render'], $this->empleados['count']),
+            new PyrollGeneralSheet('Destajistas',$this->destajistas['render'], $this->destajistas['count']),
         ];
     }
 }
