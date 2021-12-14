@@ -14,6 +14,11 @@ class PayrollTable
         $this->rows = $rows;
     }
 
+    public function count()
+    {
+        return count($this->rows);
+    }
+
     public function render(): array
     {
         $resultado = [

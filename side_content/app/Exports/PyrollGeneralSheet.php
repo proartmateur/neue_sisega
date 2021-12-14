@@ -13,10 +13,12 @@ class PyrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithSt
 {
     private $_title;
     private $data;
+    private int $count_data;
 
-    public function __construct(string $title, array $data){
+    public function __construct(string $title, array $data, int $count_data){
         $this->_title = $title;
         $this->data = $data;
+        $this->count_data = $count_data;
     }
 
     public function array(): array
@@ -56,7 +58,8 @@ class PyrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithSt
         $sheet->mergeCells('C2:E2');
         $sheet->mergeCells('G2:L2');
 
-        for($i = 5; $i < 2 + 4; $i++ ){
+        $sheet->getRowDimension(2)->setRowHeight(50);
+        for($i = 5; $i < $this->count_data + 5; $i++ ){
             $sheet->getRowDimension($i)->setRowHeight(25);
         }
 
@@ -79,6 +82,21 @@ class PyrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithSt
             'K4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
             'L4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
             'M4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'left']],
+
+            'A' => ['alignment' => ['horizontal' => 'left', 'vertical' => 'center']],
+            'B' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
+            'C' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
+            'D' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
+            'E' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
+            'F' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
+            'G' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
+            'H' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
+            'I' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
+            'J' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
+            'K' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
+            'L' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
+            'M' => ['alignment' => ['horizontal' => 'left', 'vertical' => 'center']],
+
         ];
     }
 }

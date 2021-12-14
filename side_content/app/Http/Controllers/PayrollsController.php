@@ -7,6 +7,7 @@ use App\Employee;
 use App\Exports\ExcelReport\HeaderExcel;
 use App\Exports\ExcelReport\HeaderObra;
 use App\Exports\ExcelReport\HeaderObraArray;
+use App\Exports\ExcelReport\PayrollExcel;
 use App\Exports\ExcelReport\PayrollProject;
 use App\Exports\ExcelReport\PayrollRow;
 use App\Exports\ExcelReport\PayrollTable;
@@ -603,13 +604,22 @@ class PayrollsController extends Controller
     public function export_excel(Request $request)
     {
 
-        return $this->exportExcelTest();
+        //return $this->exportExcelTest();
         $dates = explode(" / ", $request['date_range_excel']);
         $start_date = explode("-", $dates[0]);
         $end_date = explode("-", $dates[1]);
 
         $start = $start_date[2] . "-" . $start_date[1] . "-" . $start_date[0];
         $end = $end_date[2] . "-" . $end_date[1] . "-" . $end_date[0];
+
+        $proyecto_name = 'GAP GDL';
+
+        if(!is_null($request['public_work_excel'])){
+            $public_work = PublicWork::find(['id'=>$request['public_work_excel']])->first();
+            $proyecto_name = $public_work->name;
+            return PayrollExcel::exportExcel($start, $end, $proyecto_name);
+        }
+
         // 2021-12-01
         // 2021-12-11
         $fileName = \Str::random(10) . "_" . time() . ".pdf";
@@ -962,7 +972,7 @@ class PayrollsController extends Controller
         );
         //$export = new PayrollReport($data);
         //$export = new InvoicesExport(2021);
-        $export = new PayrollExport($data);
+        $export = new PayrollExport($data['general'], $data['general_count']);
         return Excel::download($export, 'Reporte_test2.xlsx');
     }
 
@@ -1034,7 +1044,7 @@ class PayrollsController extends Controller
         );
 
         $rows = $table->render();
-        foreach ($rows as $row){
+        foreach ($rows as $row) {
             $result[] = $row;
         }
         return $result;
@@ -1132,14 +1142,18 @@ class PayrollsController extends Controller
         );
 
         $rows = $table->render();
-        foreach ($rows as $row){
+        foreach ($rows as $row) {
             $result[] = $row;
         }
-        return $result;
+        return [
+            'general' => $result,
+            'general_count' => $table->count()
+        ];
     }
 
 
-    private function getItems(){
+    private function getItems()
+    {
         return [
             new PayrollRow(
                 'Enrique Nieto Martínez',
