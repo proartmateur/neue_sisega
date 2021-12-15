@@ -2,7 +2,15 @@
 
 namespace Tests\Unit;
 
+use App\Employee;
+use App\Exports\ExcelReport\HeaderExcel;
+use App\Exports\ExcelReport\HeaderObra;
+use App\Exports\ExcelReport\HeaderObraArray;
+use App\Exports\ExcelReport\PayrollProject;
+use App\Exports\ExcelReport\PayrollRow;
+use App\Exports\ExcelReport\PayrollTable;
 use App\Exports\PayrollReport;
+use App\Payroll;
 use Maatwebsite\Excel\Facades\Excel;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,6 +24,7 @@ class ExampleTest extends TestCase
      */
     public function testBasicTest()
     {
+        $hola = "JOJOJO";
         $this->assertTrue(true);
     }
 
@@ -80,18 +89,19 @@ class ExampleTest extends TestCase
         $this->assertTrue(true);
     }
 
-    private function getData(){
-        return array (
+    private function getData()
+    {
+        return array(
             0 =>
-                array (
+                array(
                     0 => -1,
                 ),
             1 =>
-                array (
+                array(
                     0 => 'NOMINA SEMANAL ',
                 ),
             2 =>
-                array (
+                array(
                     0 => 'GAP GDL  ',
                     1 => '',
                     2 => '369884.00',
@@ -101,7 +111,7 @@ class ExampleTest extends TestCase
                     6 => 'NOMINA SEMANAL 30 DE NOVIEMBRE DE 2021 ',
                 ),
             3 =>
-                array (
+                array(
                     0 => 'A ',
                     1 => 'B',
                     2 => 'C',
@@ -117,11 +127,11 @@ class ExampleTest extends TestCase
                     12 => 'M',
                 ),
             4 =>
-                array (
+                array(
                     0 => ' ',
                 ),
             5 =>
-                array (
+                array(
                     0 => 'Nombre completo',
                     1 => ' ',
                     2 => 'Sueldo',
@@ -138,7 +148,7 @@ class ExampleTest extends TestCase
                     13 => 'Comentarios',
                 ),
             6 =>
-                array (
+                array(
                     0 => 'Daniel Sigala Medina C.C. ',
                     1 => ' ',
                     2 => '0.00',
@@ -155,7 +165,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             7 =>
-                array (
+                array(
                     0 => 'Sergio Guillen Gutierrez ',
                     1 => ' ',
                     2 => '2300.00',
@@ -172,7 +182,7 @@ class ExampleTest extends TestCase
                     13 => '21.5 HRS EXTRA ',
                 ),
             8 =>
-                array (
+                array(
                     0 => 'Carlos Humberto Landeros Lopez ',
                     1 => ' ',
                     2 => '2200.00',
@@ -189,7 +199,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             9 =>
-                array (
+                array(
                     0 => 'Maria Trinidad Garcia Angel ',
                     1 => ' ',
                     2 => '2000.00',
@@ -206,7 +216,7 @@ class ExampleTest extends TestCase
                     13 => '5 HORAS EXTRA ',
                 ),
             10 =>
-                array (
+                array(
                     0 => 'Juan Carlos Martinez Chontal ',
                     1 => ' ',
                     2 => '2800.00',
@@ -223,7 +233,7 @@ class ExampleTest extends TestCase
                     13 => '5 HORAS EXTRA ',
                 ),
             11 =>
-                array (
+                array(
                     0 => 'Adolfo Garcia Rodriguez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -240,7 +250,7 @@ class ExampleTest extends TestCase
                     13 => '5.5 HORAS EXTRA ',
                 ),
             12 =>
-                array (
+                array(
                     0 => 'Jose Francisco Flores Orozco ',
                     1 => ' ',
                     2 => '2000.00',
@@ -257,7 +267,7 @@ class ExampleTest extends TestCase
                     13 => '5.5 HORAS EXTRA ',
                 ),
             13 =>
-                array (
+                array(
                     0 => 'Guadalupe Juanpedro Orozco ',
                     1 => ' ',
                     2 => '2000.00',
@@ -274,7 +284,7 @@ class ExampleTest extends TestCase
                     13 => '5 HORAS EXTRA ',
                 ),
             14 =>
-                array (
+                array(
                     0 => 'Rocio Enriquez Rodriguez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -291,7 +301,7 @@ class ExampleTest extends TestCase
                     13 => '9 HORAS EXTRA ',
                 ),
             15 =>
-                array (
+                array(
                     0 => 'Rodolfo Enriquez Muñoz ',
                     1 => ' ',
                     2 => '2000.00',
@@ -308,7 +318,7 @@ class ExampleTest extends TestCase
                     13 => '14 HORAS EXTRA ',
                 ),
             16 =>
-                array (
+                array(
                     0 => 'Cynthia Esther Guillén Venegas ',
                     1 => ' ',
                     2 => '2000.00',
@@ -325,7 +335,7 @@ class ExampleTest extends TestCase
                     13 => '11.5 HORAS EXTRA ',
                 ),
             17 =>
-                array (
+                array(
                     0 => 'Hector Javier Soto Castro ',
                     1 => ' ',
                     2 => '0.00',
@@ -342,7 +352,7 @@ class ExampleTest extends TestCase
                     13 => 'FAUSTINA, ALONDRA Y DIANA = $2250, DANIELA = $2000 ',
                 ),
             18 =>
-                array (
+                array(
                     0 => 'Hector Javier Soto Castro C.C. ',
                     1 => ' ',
                     2 => '0.00',
@@ -359,7 +369,7 @@ class ExampleTest extends TestCase
                     13 => 'GARRAFPNES, BOLSAS NEGRAS Y ESTROPAJOS, PTR 2\'\'X2\'\', RELLENO EXTINTORES, GASTOS MEDICOS ROCIO, MATERIAL ELECTRICO, PLAN DE INTERNET, MICAS, GASOLINA, CELULAR RODOLFO ',
                 ),
             19 =>
-                array (
+                array(
                     0 => 'Alejandro de la Vega Ramirez ',
                     1 => ' ',
                     2 => '0.00',
@@ -376,7 +386,7 @@ class ExampleTest extends TestCase
                     13 => '6 HORAS EXTRA ',
                 ),
             20 =>
-                array (
+                array(
                     0 => 'Citlalli Soriano Rodriguez ',
                     1 => ' ',
                     2 => '0.00',
@@ -393,7 +403,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             21 =>
-                array (
+                array(
                     0 => 'Jose Isidro Gomez Ortega ',
                     1 => ' ',
                     2 => '0.00',
@@ -410,7 +420,7 @@ class ExampleTest extends TestCase
                     13 => '8 HORAS EXTRA ',
                 ),
             22 =>
-                array (
+                array(
                     0 => 'Jose Flores Alegria ',
                     1 => ' ',
                     2 => '0.00',
@@ -427,7 +437,7 @@ class ExampleTest extends TestCase
                     13 => 'COLOCACIÓN DE LAMPARAS DOBLE ALTURA, SALIDAS PARA ANUNCIOS, NICHOS, AIRE, COLOCACION DE ESCALERILLA ',
                 ),
             23 =>
-                array (
+                array(
                     0 => 'Carlos Humberto Landeros Lopez ',
                     1 => ' ',
                     2 => '2200.00',
@@ -444,7 +454,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             24 =>
-                array (
+                array(
                     0 => 'Maria Trinidad Garcia Angel ',
                     1 => ' ',
                     2 => '2000.00',
@@ -461,7 +471,7 @@ class ExampleTest extends TestCase
                     13 => '14 HORAS EXTRA ',
                 ),
             25 =>
-                array (
+                array(
                     0 => 'Adolfo Garcia Rodriguez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -478,7 +488,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             26 =>
-                array (
+                array(
                     0 => 'Jose Francisco Flores Orozco ',
                     1 => ' ',
                     2 => '2000.00',
@@ -495,7 +505,7 @@ class ExampleTest extends TestCase
                     13 => '13 HORAS EXTRA ',
                 ),
             27 =>
-                array (
+                array(
                     0 => 'Guadalupe Juanpedro Orozco ',
                     1 => ' ',
                     2 => '2000.00',
@@ -512,7 +522,7 @@ class ExampleTest extends TestCase
                     13 => '10 HORAS EXTRA ',
                 ),
             28 =>
-                array (
+                array(
                     0 => 'Rocio Enriquez Rodriguez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -529,7 +539,7 @@ class ExampleTest extends TestCase
                     13 => '20 HRS EXTRA ',
                 ),
             29 =>
-                array (
+                array(
                     0 => 'Rodolfo Enriquez Muñoz ',
                     1 => ' ',
                     2 => '2000.00',
@@ -546,7 +556,7 @@ class ExampleTest extends TestCase
                     13 => '25 HRS EXTRA ',
                 ),
             30 =>
-                array (
+                array(
                     0 => 'Cynthia Esther Guillén Venegas ',
                     1 => ' ',
                     2 => '2000.00',
@@ -563,7 +573,7 @@ class ExampleTest extends TestCase
                     13 => '24 HRS EXTRA ',
                 ),
             31 =>
-                array (
+                array(
                     0 => 'Faustina Enriquez Muñoz ',
                     1 => ' ',
                     2 => '2000.00',
@@ -580,7 +590,7 @@ class ExampleTest extends TestCase
                     13 => '20 HRS EXTRA ',
                 ),
             32 =>
-                array (
+                array(
                     0 => 'Diana Laura Rodriguez Rivas ',
                     1 => ' ',
                     2 => '2000.00',
@@ -597,7 +607,7 @@ class ExampleTest extends TestCase
                     13 => '9 HRS EXTRA ',
                 ),
             33 =>
-                array (
+                array(
                     0 => 'Gustavo Diaz Chavez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -614,7 +624,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             34 =>
-                array (
+                array(
                     0 => 'Tito Lopez Roy ',
                     1 => ' ',
                     2 => '2000.00',
@@ -631,7 +641,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             35 =>
-                array (
+                array(
                     0 => 'Uriel Nieves Ruvalcaba ',
                     1 => ' ',
                     2 => '2200.00',
@@ -648,7 +658,7 @@ class ExampleTest extends TestCase
                     13 => '13 HRS EXTRA - 500 PRESTAMO ',
                 ),
             36 =>
-                array (
+                array(
                     0 => 'Gabriel Ramirez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -665,7 +675,7 @@ class ExampleTest extends TestCase
                     13 => '20 HRS EXTRA ',
                 ),
             37 =>
-                array (
+                array(
                     0 => 'Oscar Guerrero Muñiz ',
                     1 => ' ',
                     2 => '2300.00',
@@ -682,7 +692,7 @@ class ExampleTest extends TestCase
                     13 => '13 HRS EXTRA ',
                 ),
             38 =>
-                array (
+                array(
                     0 => 'Citlalli Soriano Rodriguez ',
                     1 => ' ',
                     2 => '0.00',
@@ -699,7 +709,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             39 =>
-                array (
+                array(
                     0 => 'Jose Isidro Gomez Ortega ',
                     1 => ' ',
                     2 => '0.00',
@@ -716,7 +726,7 @@ class ExampleTest extends TestCase
                     13 => '24 HRS EXTRA ',
                 ),
             40 =>
-                array (
+                array(
                     0 => 'Luis Alejandro Lopez Aranda C.C. ',
                     1 => ' ',
                     2 => '0.00',
@@ -733,7 +743,7 @@ class ExampleTest extends TestCase
                     13 => 'COMIDA TRABAJADORES DOMINGO ',
                 ),
             41 =>
-                array (
+                array(
                     0 => 'Hector Javier Soto Castro C.C. ',
                     1 => ' ',
                     2 => '0.00',
@@ -750,7 +760,7 @@ class ExampleTest extends TestCase
                     13 => 'GASOLINA, DIESEL, CINTA MASKKING, COMIDA SABADO, BOLETOS GDL-AGS, CARTAS POLICIA ',
                 ),
             42 =>
-                array (
+                array(
                     0 => 'Carlos Humberto Landeros Lopez ',
                     1 => ' ',
                     2 => '2200.00',
@@ -767,7 +777,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             43 =>
-                array (
+                array(
                     0 => 'Maria Trinidad Garcia Angel ',
                     1 => ' ',
                     2 => '2000.00',
@@ -784,7 +794,7 @@ class ExampleTest extends TestCase
                     13 => '15.5 HRS EXTRA ',
                 ),
             44 =>
-                array (
+                array(
                     0 => 'Juan Carlos Martinez Chontal ',
                     1 => ' ',
                     2 => '2800.00',
@@ -801,7 +811,7 @@ class ExampleTest extends TestCase
                     13 => '14 HRS EXTRA ',
                 ),
             45 =>
-                array (
+                array(
                     0 => 'Adolfo Garcia Rodriguez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -818,7 +828,7 @@ class ExampleTest extends TestCase
                     13 => '17.5 HRS EXTRA ',
                 ),
             46 =>
-                array (
+                array(
                     0 => 'Jose Francisco Flores Orozco ',
                     1 => ' ',
                     2 => '2000.00',
@@ -835,7 +845,7 @@ class ExampleTest extends TestCase
                     13 => '20.5 HRS EXTRA ',
                 ),
             47 =>
-                array (
+                array(
                     0 => 'Guadalupe Juanpedro Orozco ',
                     1 => ' ',
                     2 => '2000.00',
@@ -852,7 +862,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             48 =>
-                array (
+                array(
                     0 => 'Rodolfo Enriquez Muñoz ',
                     1 => ' ',
                     2 => '2000.00',
@@ -869,7 +879,7 @@ class ExampleTest extends TestCase
                     13 => '15 HRS EXTRA ',
                 ),
             49 =>
-                array (
+                array(
                     0 => 'Rocio Enriquez Rodriguez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -886,7 +896,7 @@ class ExampleTest extends TestCase
                     13 => '20.5 HRS EXTRA ',
                 ),
             50 =>
-                array (
+                array(
                     0 => 'Cynthia Esther Guillén Venegas ',
                     1 => ' ',
                     2 => '2000.00',
@@ -903,7 +913,7 @@ class ExampleTest extends TestCase
                     13 => '15.5 HRS EXTRA ',
                 ),
             51 =>
-                array (
+                array(
                     0 => 'Gustavo Diaz Chavez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -920,7 +930,7 @@ class ExampleTest extends TestCase
                     13 => '14 HRS EXTRA ',
                 ),
             52 =>
-                array (
+                array(
                     0 => 'Tito Lopez Roy ',
                     1 => ' ',
                     2 => '2000.00',
@@ -937,7 +947,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             53 =>
-                array (
+                array(
                     0 => 'Gabriel Ramirez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -954,7 +964,7 @@ class ExampleTest extends TestCase
                     13 => '6 HRS EXTRA ',
                 ),
             54 =>
-                array (
+                array(
                     0 => 'Oscar Guerrero Muñiz ',
                     1 => ' ',
                     2 => '2300.00',
@@ -971,7 +981,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             55 =>
-                array (
+                array(
                     0 => 'Hector Javier Soto Castro C.C. ',
                     1 => ' ',
                     2 => '0.00',
@@ -988,7 +998,7 @@ class ExampleTest extends TestCase
                     13 => 'SEMANA 15/11 - 20/11/2021: CALAVERAS CAMIONETA: $2380, TORRETA $470, FOCOS: $34, BIDONES: $60, MEDICINA: $90, CINTAS DE PRECAUCIÓN: $575, CELULAR ISIDRO: $6000, 2 DC3: $800, 3 PAQUETES DE HOJAS: $261, DESENGRASANTE PINOL Y BIDON: $160, UBER PARA PLACAS CHAROLA: $171, CLORO Y VINAGRE: $150, GASOLINA: $400 ',
                 ),
             56 =>
-                array (
+                array(
                     0 => 'Citlalli Soriano Rodriguez ',
                     1 => ' ',
                     2 => '0.00',
@@ -1005,7 +1015,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             57 =>
-                array (
+                array(
                     0 => 'Jose Isidro Gomez Ortega ',
                     1 => ' ',
                     2 => '0.00',
@@ -1022,7 +1032,7 @@ class ExampleTest extends TestCase
                     13 => '26 HRS EXTRA ',
                 ),
             58 =>
-                array (
+                array(
                     0 => 'Jose Flores Alegria ',
                     1 => ' ',
                     2 => '0.00',
@@ -1039,7 +1049,7 @@ class ExampleTest extends TestCase
                     13 => 'COLOCACION DE LAMPARAS PASILLO, CABLEADO DEL CGA A PASILLO, ESCALERILLA, LAMPARA TECHUMBRE ',
                 ),
             59 =>
-                array (
+                array(
                     0 => 'Luis Alejandro Lopez Aranda C.C. ',
                     1 => ' ',
                     2 => '0.00',
@@ -1056,7 +1066,7 @@ class ExampleTest extends TestCase
                     13 => 'Comidas de trabajadores, material y traslados de personal. ',
                 ),
             60 =>
-                array (
+                array(
                     0 => 'Sergio Guillen Gutierrez ',
                     1 => ' ',
                     2 => '2300.00',
@@ -1073,7 +1083,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             61 =>
-                array (
+                array(
                     0 => 'Carlos Humberto Landeros Lopez ',
                     1 => ' ',
                     2 => '2200.00',
@@ -1090,7 +1100,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             62 =>
-                array (
+                array(
                     0 => 'Maria Trinidad Garcia Angel ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1107,7 +1117,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             63 =>
-                array (
+                array(
                     0 => 'Juan Carlos Martinez Chontal ',
                     1 => ' ',
                     2 => '2800.00',
@@ -1124,7 +1134,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             64 =>
-                array (
+                array(
                     0 => 'Adolfo Garcia Rodriguez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1141,7 +1151,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             65 =>
-                array (
+                array(
                     0 => 'Jose Francisco Flores Orozco ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1158,7 +1168,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             66 =>
-                array (
+                array(
                     0 => 'Guadalupe Juanpedro Orozco ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1175,7 +1185,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             67 =>
-                array (
+                array(
                     0 => 'Rocio Enriquez Rodriguez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1192,7 +1202,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             68 =>
-                array (
+                array(
                     0 => 'Rodolfo Enriquez Muñoz ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1209,7 +1219,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             69 =>
-                array (
+                array(
                     0 => 'Cynthia Esther Guillén Venegas ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1226,7 +1236,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             70 =>
-                array (
+                array(
                     0 => 'Faustina Enriquez Muñoz ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1243,7 +1253,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             71 =>
-                array (
+                array(
                     0 => 'Alondra Jaqueline Enriquez Muñoz ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1260,7 +1270,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             72 =>
-                array (
+                array(
                     0 => 'Daniela Guadalupe Garcia Salazar ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1277,7 +1287,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             73 =>
-                array (
+                array(
                     0 => 'Gustavo Diaz Chavez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1294,7 +1304,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             74 =>
-                array (
+                array(
                     0 => 'Tito Lopez Roy ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1311,7 +1321,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             75 =>
-                array (
+                array(
                     0 => 'Gabriel Ramirez ',
                     1 => ' ',
                     2 => '2000.00',
@@ -1328,7 +1338,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             76 =>
-                array (
+                array(
                     0 => 'Hector Javier Soto Castro C.C. ',
                     1 => ' ',
                     2 => '0.00',
@@ -1345,7 +1355,7 @@ class ExampleTest extends TestCase
                     13 => 'SEMANA 22/11 - 27/11/2021: CARPETAS DE ARGOLLA Y PROTECTORES DE HOJA: $661, PERFILES DE ALUMINIO: $1036, COMIDA SÁBADO: $1400, NOCHE BUENAS Y TIERRA: $1365, CARDA Y FELPA: $125, GASOLINA: $350, NOCHE BUENAS: $1540, CHALECOS: $1200, NOCHE BUENAS: $900, TIERRA VEGETAL: $700, ÁCIDO: $903, AEROSOL: $195, TOPES: $952, CUTTER: $66, CENA LUNES: $1738, UBERS GENTE: $839, ÁCIDO; $477, SELLADOR: $1205, CENA MARTES: $1833, REFRESCOS CENA MARTES: $189, PARES DE GUANTES: $260, PLACAS CIEGAS: $40, LLENADO DE CISTERNAS: $120, UBER MATERIAL ELECTRICO: $164, ACIDO MURIATICO: $320, SILICON: $373 ',
                 ),
             77 =>
-                array (
+                array(
                     0 => 'Citlalli Soriano Rodriguez ',
                     1 => ' ',
                     2 => '0.00',
@@ -1362,7 +1372,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             78 =>
-                array (
+                array(
                     0 => 'Jose Isidro Gomez Ortega ',
                     1 => ' ',
                     2 => '0.00',
@@ -1379,7 +1389,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             79 =>
-                array (
+                array(
                     0 => 'Jose Flores Alegria ',
                     1 => ' ',
                     2 => '0.00',
@@ -1396,7 +1406,7 @@ class ExampleTest extends TestCase
                     13 => ' ',
                 ),
             80 =>
-                array (
+                array(
                     0 => 'Israel Naun Lopez Soltero ',
                     1 => ' ',
                     2 => '0.00',
@@ -1412,6 +1422,288 @@ class ExampleTest extends TestCase
                     12 => '',
                     13 => 'REPARACIÓN DE TUBERÍAS Y AJUSTES DE COLADERAS ',
                 ),
-        ) ;
+        );
+    }
+
+    public function testHeaderExcel()
+    {
+        $header = new HeaderExcel(
+            "NOMINA mes",
+            new HeaderObraArray(
+                [
+                    new HeaderObra("GAP GDL", 58456.00)
+                ]
+            ),
+            "09 de diciembre 2021"
+        );
+        $hdata = $header->render();
+
+        $this->assertTrue(true);
+    }
+
+    public function testPayrollTable()
+    {
+        $table = new PayrollTable(
+            [
+                new PayrollRow(
+                    'Enrique Nieto Martínez',
+                    40000,
+                    0,
+                    45000,
+                    95000,
+                    'My Life',
+                    'Karma , Healt, Love & Happyness',
+                    '323334+',
+                    '111222333444555666777888999',
+                    '123456',
+                    'Empleado',
+                    '',
+                    ''
+                ),
+                new PayrollRow(
+                    'Jane Doe',
+                    8589.66,
+                    0,
+                    0,
+                    8589.66,
+                    'SOME PROJECT',
+                    'BBVA',
+                    '111222111',
+                    '789456123789456123789456123',
+                    '123456',
+                    'Empleado',
+                    '',
+                    ''
+                )
+            ]
+        );
+
+        $render = $table->render();
+        $this->assertEquals('Nombre Completo', $render[0][0]);
+        $this->assertTrue(true);
+    }
+
+    public function testPayrollProject()
+    {
+        $items = [
+            new PayrollRow(
+                'Enrique Nieto Martínez',
+                40000,
+                0,
+                45000,
+                95000,
+                'My Life',
+                'Karma , Healt, Love & Happyness',
+                '323334+',
+                '111222333444555666777888999',
+                '123456',
+                'Empleado',
+                '',
+                ''
+            ),
+            new PayrollRow(
+                'Jane Doe',
+                8589.66,
+                0,
+                0,
+                8589.66,
+                'SOME PROJECT',
+                'BBVA',
+                '111222111',
+                '789456123789456123789456123',
+                '123456',
+                'Empleado',
+                '',
+                ''
+            ),
+            new PayrollRow(
+                'Jane Doe',
+                8589.66,
+                0,
+                0,
+                8589.66,
+                'SOME PROJECT',
+                'BBVA',
+                '111222111',
+                '789456123789456123789456123',
+                '123456',
+                'Empleado',
+                '',
+                ''
+            ),
+            new PayrollRow(
+                'Jane Doe',
+                1000,
+                0,
+                0,
+                1000,
+                'SOME PROJECT',
+                'BBVA',
+                '111222111',
+                '789456123789456123789456123',
+                '123456',
+                'Empleado',
+                '',
+                ''
+            )
+        ];
+
+        $project = new PayrollProject(
+            'My Life',
+            $items
+        );
+
+        $total = $project->total();
+        $items = $project->getItems();
+
+        $this->assertTrue(true);
+    }
+
+    public function testPayroll()
+    {
+        $start = '2021-12-01';
+        $end = '2021-12-11';
+        $proyecto_name = 'MUSEO CCU';
+        $proy = $this->projectPayroll(
+            $proyecto_name,
+            $start,
+            $end
+        );
+
+
+
+        $this->assertTrue(true);
+    }
+
+    private function projectPayroll(
+        string $proyecto_name,
+        string $start,
+        string $end
+    )
+    {
+
+        $payrolls_items = [];
+
+        $payroll = Payroll::select(
+            'payrolls.id AS id', 'payrolls.days_worked', 'payrolls.hours_worked',
+            'payrolls.extra_hours', 'payrolls.total_salary', 'payrolls.date',
+            'payrolls.comments',
+            'employees.id as employee_id', 'employees.name as employee_name',
+            'employees.salary_week as employee_salary_week', 'employees.bank as bank',
+            'employees.account as account', 'employees.clabe as clabe',
+            'employees.imss_number as imss_number',
+            'employees.type as employee_type', 'payrolls.extra_hours as extra_hours',
+            'public_works.id as public_work_id',
+            'public_works.name AS public_work', 'payrolls.comments'
+        )->join('employees', 'employees.id', 'payrolls.employee_id')
+            ->join('public_works', 'public_works.id', 'payrolls.public_work_id')
+            ->where('public_works.name', 'like', $proyecto_name)
+            ->whereBetween('payrolls.date', [$start, $end . ' 23:59:59'])->get();
+
+        $count = 0;
+        $total_salarios = 0;
+        foreach ($payroll as $pr) {
+            $b2 = $payroll[$count]->Bonuses;
+            $total_bonus = 0;
+            if (count($b2) > 1) {
+                $total_bonus = $this->total_bonus($b2);
+                if (is_null($total_bonus)) {
+                    $total_bonus = 0;
+                }
+            }
+
+            $total_salarios += $pr->total_salary;
+
+            $pr_item = new PayrollRow(
+                $pr->employee_name,
+                floatval($pr->employee_salary_week),
+                is_null($pr->extra_hours) ? 0 : $pr->extra_hours,
+                $total_bonus,
+                $pr->total_salary,
+                $proyecto_name,
+                is_null($pr->bank) ? "" : $pr->bank,
+                is_null($pr->account) ? "" : $pr->account,
+                is_null($pr->clabe) ? "" : $pr->clabe,
+                is_null($pr->imss_number) ? "" : $pr->imss_number,
+                $pr->employee_type == 1 ? 'Empleado' : 'Destajista',
+                "",
+                is_null($pr->comments) ? "" : $pr->comments
+            );
+            $payrolls_items[] = $pr_item;
+            $count += 1;
+        }
+
+        $fecha = $this->dateSpanish($end);
+        $title = "NOMINA SEMANAL $fecha";
+        $project = new PayrollProject(
+            $proyecto_name, $payrolls_items
+        );
+
+        $header = new HeaderExcel(
+            "NOMINA SEMANAL",
+            new HeaderObraArray(
+                [
+                    new HeaderObra($project->getObra(), $project->total())
+                ]
+            ),
+            $fecha
+        );
+        $hdata = $header->render();
+
+        $table = new PayrollTable(
+            $project->getItems()
+        );
+
+        $result = array(
+            $hdata[0],
+            $hdata[1],
+            $hdata[2]
+        );
+
+        $rows = $table->render();
+        foreach ($rows as $row){
+            $result[] = $row;
+        }
+        return $result;
+    }
+
+    private function total_bonus($bonuses)
+    {
+        $result = 0;
+        foreach ($bonuses as $bonus) {
+            $result += (int)$bonus->amount;
+        }
+        return $result;
+    }
+
+    private function dateSpanish(string $date)
+    {
+        //Format YYYY-MM-DD
+        $aDia = substr($date, 8, 2);
+        $aMes = substr($date, 5, 2);
+        $aAnio = substr($date, 0, 4);
+        $mes = $this->getMes($aMes);
+
+        return "$aDia DE $mes DE $aAnio";
+    }
+
+    private function getMes(int $mes): string
+    {
+        $meses = [
+            1 => 'ENERO',
+            2 => 'FEBRERO',
+            3 => 'MARZO',
+            4 => 'ABRIL',
+            5 => 'MAYO',
+            6 => 'JUNIO',
+            7 => 'JULIO',
+            8 => 'AGOSTO',
+            9 => 'SEPTIEMBRE',
+            10 => 'OCTUBRE',
+            11 => 'NOVIEMBRE',
+            12 => 'DICIEMBRE'
+        ];
+
+        return $meses[$mes];
     }
 }
