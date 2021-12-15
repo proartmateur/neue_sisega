@@ -4,6 +4,7 @@ namespace App\Exports\ExcelReport;
 
 use App\Exports\PayrollExport;
 use App\Payroll;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use phpDocumentor\Reflection\Types\This;
 
@@ -14,7 +15,7 @@ class PayrollExcel
     {
 //        $start = '2021-12-01';
 //        $end = '2021-12-11';
-        //$proyecto_name = 'GAP GDL';
+
         $data = PayrollExcel::projectPayroll(
             $public_work,
             $start,
@@ -83,23 +84,10 @@ class PayrollExcel
         $payroll = PayrollExcel::payrollData($start, $end, $proyecto_name);
 
         $count = 0;
-        $total_salarios = 0;
-        $total_salarios_destajistas = 0;
-        $total_salarios_empleados = 0;
+
         foreach ($payroll as $pr) {
 
-            $the_bonuses = $payroll[$count]->Bonuses;
-            $total_bonus = 0;
-            if (count($the_bonuses) > 1) {
-
-                $total_bonus = PayrollExcel::total_bonus($the_bonuses);
-                if (is_null($total_bonus)) {
-                    $total_bonus = 0;
-                }
-
-            }
-
-            $total_salarios += $pr->total_salary;
+            $total_bonus = self::calcBonusesFromPayroll($payroll[$count]->Bonuses);
 
             //region Item
             $pr_item = new PayrollRow(
@@ -120,19 +108,19 @@ class PayrollExcel
             //endregion
 
             if ($pr_item->getTipo() === 'Destajista') {
-                $total_salarios_destajistas += $pr_item->getTotal();
                 $destajistas[] = $pr_item;
             } else {
-                $total_salarios_empleados += $pr_item->getTotal();
                 $empleados[] = $pr_item;
             }
             $payrolls_items[] = $pr_item;
+
             $count += 1;
         }
 
-        $destajistas_render = self::buildRenderArray($proyecto_name, $destajistas, $end);
-        $empleados_render = self::buildRenderArray($proyecto_name, $empleados, $end);
-        $general_render = self::buildRenderArray($proyecto_name, $payrolls_items, $end);
+        $destajistas_render = self::buildRenderArray($proyecto_name, $destajistas, $start, $end);
+        $empleados_render = self::buildRenderArray($proyecto_name, $empleados, $start, $end);
+        $general_render = self::buildRenderArray($proyecto_name, $payrolls_items, $start, $end);
+
         return [
             'general' => $general_render,
             'empleados' => $empleados_render,
@@ -140,8 +128,22 @@ class PayrollExcel
         ];
     }
 
+    private static function calcBonusesFromPayroll($the_bonuses)
+    {
+        $total_bonus = 0;
+        if (count($the_bonuses) > 1) {
+
+            $total_bonus = PayrollExcel::total_bonus($the_bonuses);
+            if (is_null($total_bonus)) {
+                $total_bonus = 0;
+            }
+        }
+        return $total_bonus;
+    }
+
+
     private static function buildRenderArray(
-        string $proyecto_name, array $payrolls_items, string $end
+        string $proyecto_name, array $payrolls_items,string $start, string $end
     )
     {
         $fecha = PayrollExcel::dateSpanish($end);
@@ -149,8 +151,9 @@ class PayrollExcel
             $proyecto_name, $payrolls_items
         );
 
+        $tipo_payroll = self::payrollType($start, $end);
         $header = new HeaderExcel(
-            "NOMINA SEMANAL",
+            "NOMINA $tipo_payroll",
             new HeaderObraArray(
                 [
                     new HeaderObra($project->getObra(), $project->total())
@@ -179,6 +182,50 @@ class PayrollExcel
             'render' => $result,
             'count' => $table->count()
         ];
+    }
+
+    private static function payrollType(string $start, string $end)
+    {
+        $s = Carbon::createFromFormat('Y-m-d', $start);
+        $e = Carbon::createFromFormat('Y-m-d', $end);
+        $delta = $s->diffInDays($e);
+
+        $semana = $delta <= 7;
+        $quincena = $delta <= 15;
+        $mensual = $delta <= 28;
+        $bimensual = $delta <= 56;
+        $trimestral = $delta <= (28 * 3);
+
+        $resultado = 'SEMANAL';
+
+
+        if($trimestral)
+        {
+            $resultado = 'TRIIMESTRAL';
+        }
+
+        if($bimensual)
+        {
+            $resultado = 'BIMESTRAL';
+        }
+
+        if($mensual)
+        {
+            $resultado = 'MENSUAL';
+        }
+
+        if($quincena)
+        {
+            $resultado = 'QUINCENAL';
+        }
+
+        if($semana)
+        {
+            $resultado = 'SEMANAL';
+        }
+
+
+        return $resultado;
     }
 
     private static function payrollData(string $start, string $end, string $proyecto_name)
