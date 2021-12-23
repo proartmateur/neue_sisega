@@ -38,7 +38,7 @@ class HeaderExcel
                 $obras[0]->getTotal(),
                 '',
                 '',
-                '',
+
                 strtoupper("$type $fecha")
             ];
         }
