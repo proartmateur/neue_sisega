@@ -2,6 +2,7 @@
 
 namespace App\Exports\ExcelReport;
 
+use App\Exports\PayrollAllProjectsExport;
 use App\Exports\PayrollExport;
 use App\Payroll;
 use Carbon\Carbon;
@@ -93,7 +94,7 @@ class PayrollExcel
 
 
 
-        $export = new PayrollExport($general, $destajistas, $empleados);
+        $export = new PayrollAllProjectsExport($general, $destajistas, $empleados, count($general_sum));
 
         return Excel::download($export, "Reporte_$end-$public_work.xlsx");
 
@@ -146,13 +147,14 @@ class PayrollExcel
             if ($count != 0) {
                 $sum[5] = '';
             }
+            $sum[1] = $sum[2];
             $total += $sum[2];
             $clean[] = $sum;
             $count += 1;
         }
 
         $clean[0][3] = $total;
-        $clean = array_merge([["", "", "", ""]], $clean);
+        //$clean = array_merge([["", "", "", ""]], $clean);
 
         //endregion
         return $clean;
