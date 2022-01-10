@@ -588,7 +588,8 @@ class PayrollsController extends Controller
         return $this->reporteTodosLosProyectos($start, $end);
     }
 
-    private function obtenerFechas(string $date_range){
+    private function obtenerFechas(string $date_range)
+    {
         $now = Carbon::now();
         $week_init = $now->subDays(7);
         if (is_null($date_range)) {
@@ -613,7 +614,8 @@ class PayrollsController extends Controller
 
     }
 
-    public function reporteTodosLosProyectos($start, $end){
+    public function reporteTodosLosProyectos($start, $end)
+    {
 
 //        $payrolls = Payroll::select('payrolls.id AS id', 'payrolls.days_worked', 'payrolls.hours_worked', 'payrolls.extra_hours',
 //            'payrolls.total_salary', 'payrolls.date', 'employees.id as employee_id', 'public_works.id as public_work_id',
@@ -624,7 +626,7 @@ class PayrollsController extends Controller
         $payrolls = $this->getPayrollFromAllProjects($start, $end);
 
         $count_payrolls = count($payrolls);
-        if($count_payrolls === 0) {
+        if ($count_payrolls === 0) {
             $public_work = PublicWork::all()->first();
             $proyecto_name = $public_work->name;
             $proyecto_name = "Todos (0 registros)";
@@ -752,7 +754,8 @@ class PayrollsController extends Controller
     }
 
 
-    private function getPayrollFromAllProjects($start, $end){
+    private function getPayrollFromAllProjects($start, $end)
+    {
         return Payroll::select('payrolls.id AS id', 'payrolls.days_worked', 'payrolls.hours_worked', 'payrolls.extra_hours',
             'payrolls.total_salary', 'payrolls.date', 'employees.id as employee_id', 'public_works.id as public_work_id',
             'public_works.name AS public_work', 'payrolls.comments')

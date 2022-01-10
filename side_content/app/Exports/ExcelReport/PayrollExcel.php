@@ -49,6 +49,7 @@ class PayrollExcel
         $g_sums = [];
         $d_sums = [];
         $e_sums = [];
+        $sums_index = 0;
 
         $g_pays = [];
         $d_pays = [];
@@ -74,6 +75,17 @@ class PayrollExcel
             $g_pays = array_merge($g_pays, PayrollExcel::isolatePayrollsFromRender($general));
             $e_pays = array_merge($e_pays, PayrollExcel::isolatePayrollsFromRender($empleados));
 
+
+            /*$d_pays = PayrollExcel::ceilPayrollsFromIsolated($d_pays);
+            $g_pays = PayrollExcel::ceilPayrollsFromIsolated($g_pays);
+            $e_pays = PayrollExcel::ceilPayrollsFromIsolated($e_pays);
+
+            $calc_g = PayrollExcel::recalculateSummaries($g_pays);
+            $calc_d = PayrollExcel::recalculateSummaries($d_pays);
+            $calc_e = PayrollExcel::recalculateSummaries($e_pays);
+            $g_sums[$counter][2] = $calc_g;
+            $d_sums[$counter][2] = $calc_d;
+            $e_sums[$counter][2] = $calc_e;*/
             /*if ($counter == 2) {
                 break;
             }*/
@@ -93,11 +105,21 @@ class PayrollExcel
         $empleados = PayrollExcel::reRenderAllProjectsPayrolls($empleados, $empleados_sum, $e_pays);
 
 
-
         $export = new PayrollAllProjectsExport($general, $destajistas, $empleados, count($general_sum));
 
         return Excel::download($export, "Reporte_$end-$public_work.xlsx");
 
+    }
+
+
+    private static function ceilPayrollsFromIsolated(array $pays)
+    {
+        $result = [];
+        foreach ($pays as $pay) {
+            $pay[2] = floatval(number_format(ceil($pay[2]), '2', '.', ''));
+            $result[] = $pay;
+        }
+        return $result;
     }
 
     private static function reRenderAllProjectsPayrolls($original, $summaries, $payrolls): array
@@ -255,7 +277,7 @@ class PayrollExcel
                 floatval($pr->employee_salary_week),
                 is_null($pr->extra_hours) ? 0 : $pr->extra_hours,
                 $total_bonus,
-                $pr->total_salary,
+                ceil($pr->total_salary),
                 $proyecto_name,
                 is_null($pr->bank) ? "" : $pr->bank,
                 is_null($pr->account) ? "" : $pr->account,

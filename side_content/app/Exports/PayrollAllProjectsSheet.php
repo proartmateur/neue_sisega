@@ -96,6 +96,8 @@ class PayrollAllProjectsSheet implements FromArray, WithTitle, ShouldAutoSize, W
             $sheet->getRowDimension($i)->setRowHeight(25);
         }
 
+        //ns30.prodns.mx
+        //ns31.prodns.mx
         $font_end = [
             'A' => ['alignment' => ['horizontal' => 'left', 'vertical' => 'center']],
             'B' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
