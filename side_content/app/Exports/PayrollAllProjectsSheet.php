@@ -64,7 +64,6 @@ class PayrollAllProjectsSheet implements FromArray, WithTitle, ShouldAutoSize, W
     public function styles(Worksheet $sheet)
     {
         $sheet->mergeCells('A1:N1');
-        //$sheet->mergeCells('A2:N2');
 
         //Merge Projects Cells
         $max_v_merge = $this->count_projects + 1;
@@ -73,7 +72,6 @@ class PayrollAllProjectsSheet implements FromArray, WithTitle, ShouldAutoSize, W
         $sheet->mergeCells("F2:J$max_v_merge");
 
         //$sheet->getRowDimension(2)->setRowHeight(50);
-
 
 
         $header_font = ['font' => ['bold' => true, 'size' => 20], 'alignment' => ['horizontal' => 'center']];
@@ -132,41 +130,7 @@ class PayrollAllProjectsSheet implements FromArray, WithTitle, ShouldAutoSize, W
         $font_styles_ok = array_merge($font_styles, $font_end);
 
         return $font_styles_ok;
-        return [
-            'A1' => ['font' => ['bold' => true, 'size' => 14], 'alignment' => ['horizontal' => 'left']],
-            'A2' => ['font' => ['bold' => true, 'size' => 20], 'alignment' => ['horizontal' => 'center']],
-            'C2' => ['font' => ['bold' => true, 'size' => 20], 'alignment' => ['horizontal' => 'center']],
-            'F2' => ['font' => ['bold' => true, 'size' => 20], 'alignment' => ['horizontal' => 'left']],
 
-            'A4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'left']],
-            'B4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
-            'C4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
-            'D4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
-            'E4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
-            'F4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
-            'G4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
-            'H4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
-            'I4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
-            'J4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
-            'K4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'left']],
-            'L4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'left']],
-            'M4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'left']],
-
-            'A' => ['alignment' => ['horizontal' => 'left', 'vertical' => 'center']],
-            'B' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
-            'C' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
-            'D' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
-            'E' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
-            'F' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
-            'G' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
-            'H' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
-            'I' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
-            'J' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
-            'K' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'left']],
-            'L' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'left']],
-            'M' => ['alignment' => ['horizontal' => 'left', 'vertical' => 'left']],
-
-        ];
     }
 
 }
