@@ -87,28 +87,11 @@ class PayrollExcel
 
         //region Build Payrolls extended
 
-
-        /*
-        $top_line = $destajistas['render'][0];
-        //New Header
-        $head_of_table_br = $destajistas['render'][2];
-        $head_of_table_cols_names = $destajistas['render'][3];
-        //payrolls
-
-        $general = [$top_line];
-        $general = array_merge($general, $general_sum);
-        $general[] = $head_of_table_br;
-        $general[] = $head_of_table_cols_names;
-        $general = array_merge($general, $g_pays);
-        $general = [
-            'render' => $general,
-            'count' => count($g_pays)
-        ];*/
         $general = PayrollExcel::reRenderAllProjectsPayrolls($general, $general_sum, $g_pays);
         $destajistas = PayrollExcel::reRenderAllProjectsPayrolls($destajistas, $destajistas_sum, $d_pays);
         $empleados = PayrollExcel::reRenderAllProjectsPayrolls($empleados, $empleados_sum, $e_pays);
-        $s = "";
-        //payrols a partir del 4
+
+
 
         $export = new PayrollExport($general, $destajistas, $empleados);
 

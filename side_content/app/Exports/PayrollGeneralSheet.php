@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PyrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithStyles, WithColumnFormatting
+class PayrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithStyles, WithColumnFormatting
 {
     private $_title;
     private $data;
@@ -37,9 +37,9 @@ class PyrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithSt
             'A' => '@',
             'B' => '"$"#,##0.00_-',
             'C' => '"$"#,##0.00_-',
-            'D' => '"$"#,##0.00_-',
-            'E' => '"$"#,##0.00_-',
-            'F' => '"$"#,##0.00_-',
+            'D' => '@',
+            'E' => '@',
+            'F' => '@',
             'G' => '@',
             'H' => '@',
             'I' => '@',
