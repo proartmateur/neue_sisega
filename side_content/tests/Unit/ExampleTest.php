@@ -6,11 +6,14 @@ use App\Employee;
 use App\Exports\ExcelReport\HeaderExcel;
 use App\Exports\ExcelReport\HeaderObra;
 use App\Exports\ExcelReport\HeaderObraArray;
+use App\Exports\ExcelReport\PayrollExcel;
 use App\Exports\ExcelReport\PayrollProject;
 use App\Exports\ExcelReport\PayrollRow;
 use App\Exports\ExcelReport\PayrollTable;
 use App\Exports\PayrollReport;
+use App\Http\Controllers\PayrollsController;
 use App\Payroll;
+use App\PublicWork;
 use Maatwebsite\Excel\Facades\Excel;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -1571,7 +1574,6 @@ class ExampleTest extends TestCase
         );
 
 
-
         $this->assertTrue(true);
     }
 
@@ -1661,7 +1663,7 @@ class ExampleTest extends TestCase
         );
 
         $rows = $table->render();
-        foreach ($rows as $row){
+        foreach ($rows as $row) {
             $result[] = $row;
         }
         return $result;
@@ -1706,4 +1708,85 @@ class ExampleTest extends TestCase
 
         return $meses[$mes];
     }
+
+
+    public function test_payroll_all_projects()
+    {
+        $start = '2021-12-01';
+        $end = '2021-12-11';
+        $proyecto_name = 'MUSEO CCU';
+        $proyecto_name = null;
+        $controller = new PayrollsController();
+        $proy = $controller->reporteTodosLosProyectos($start, $end);
+
+
+        $this->assertTrue(true);
+    }
+
+    public function test_payroll_all_projects_from_class()
+    {
+        $start = '2021-12-01';
+        $end = '2021-12-11';
+        $proyecto_name = 'MUSEO CCU';
+        $proyecto_name = null;
+
+
+//        $public_works = PublicWork::all();
+//        $pw = PublicWork::where('end_date', '>=', $start)->get();
+//        $prw = $this->getAllProjectPayrollsOldie($start, $end);
+//        $ppp = $this->uniquePublicWorks($prw);
+//        foreach ($public_works as $work) {
+//            $w = $work;
+//            $s = "";
+//        }
+        $data = PayrollExcel::exportExcelAllProjects($start, $end);
+
+        $this->assertTrue(true);
+    }
+
+    public function test_array_header_render()
+    {
+        $sums = [];
+
+        for ($i = 0; $i < 3; $i++) {
+            $sums[] = [
+                "CUITLAJO $i",
+                '',
+                10019.34,
+                '',
+                '',
+                'NOMINA QUINCENAL BLA BLA BLA'
+            ];
+        }
+
+
+
+        $this->assertTrue(true);
+    }
+
+
+    private function getAllProjectPayrollsOldie($start, $end)
+    {
+        return Payroll::select('payrolls.id AS id', 'payrolls.days_worked', 'payrolls.hours_worked', 'payrolls.extra_hours',
+            'payrolls.total_salary', 'payrolls.date', 'employees.id as employee_id', 'public_works.id as public_work_id',
+            'public_works.name AS public_work', 'payrolls.comments')
+            ->join('employees', 'employees.id', 'payrolls.employee_id')
+            ->join('public_works', 'public_works.id', 'payrolls.public_work_id')
+            ->whereBetween('payrolls.date', [$start, $end . ' 23:59:59'])->get();
+    }
+
+    private function uniquePublicWorks($payrolls): array
+    {
+        $result = [];
+
+        foreach ($payrolls as $payroll) {
+            $pw = strtoupper($payroll->public_work);
+            if (!in_array($pw, $result)) {
+                $result[] = $pw;
+            }
+            $s = "";
+        }
+        return $result;
+    }
+
 }

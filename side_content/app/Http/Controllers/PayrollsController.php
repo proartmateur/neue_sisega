@@ -578,15 +578,18 @@ class PayrollsController extends Controller
         //21
 
         if (!is_null($request['public_work_excel'])) {
+
             $public_work = PublicWork::find(['id' => $request['public_work_excel']])->first();
             $proyecto_name = $public_work->name;
+
             return PayrollExcel::exportExcel($start, $end, $proyecto_name);
         }
 
         return $this->reporteTodosLosProyectos($start, $end);
     }
 
-    private function obtenerFechas(string $date_range){
+    private function obtenerFechas(string $date_range)
+    {
         $now = Carbon::now();
         $week_init = $now->subDays(7);
         if (is_null($date_range)) {
@@ -611,22 +614,27 @@ class PayrollsController extends Controller
 
     }
 
-    private function reporteTodosLosProyectos($start, $end){
-        $payrolls = Payroll::select('payrolls.id AS id', 'payrolls.days_worked', 'payrolls.hours_worked', 'payrolls.extra_hours',
-            'payrolls.total_salary', 'payrolls.date', 'employees.id as employee_id', 'public_works.id as public_work_id',
-            'public_works.name AS public_work', 'payrolls.comments')
-            ->join('employees', 'employees.id', 'payrolls.employee_id')
-            ->join('public_works', 'public_works.id', 'payrolls.public_work_id')
-            ->whereBetween('payrolls.date', [$start, $end . ' 23:59:59'])->get();
+    public function reporteTodosLosProyectos($start, $end)
+    {
+
+//        $payrolls = Payroll::select('payrolls.id AS id', 'payrolls.days_worked', 'payrolls.hours_worked', 'payrolls.extra_hours',
+//            'payrolls.total_salary', 'payrolls.date', 'employees.id as employee_id', 'public_works.id as public_work_id',
+//            'public_works.name AS public_work', 'payrolls.comments')
+//            ->join('employees', 'employees.id', 'payrolls.employee_id')
+//            ->join('public_works', 'public_works.id', 'payrolls.public_work_id')
+//            ->whereBetween('payrolls.date', [$start, $end . ' 23:59:59'])->get();
+        $payrolls = $this->getPayrollFromAllProjects($start, $end);
 
         $count_payrolls = count($payrolls);
-        if($count_payrolls === 0) {
+        if ($count_payrolls === 0) {
             $public_work = PublicWork::all()->first();
             $proyecto_name = $public_work->name;
             $proyecto_name = "Todos (0 registros)";
             return PayrollExcel::exportExcel($start, $end, $proyecto_name);
         }
 
+        $data = PayrollExcel::exportExcelAllProjects($start, $end);
+        return $data;
         $array = [];
 
         $data = [];
@@ -746,6 +754,16 @@ class PayrollsController extends Controller
     }
 
 
+    private function getPayrollFromAllProjects($start, $end)
+    {
+        return Payroll::select('payrolls.id AS id', 'payrolls.days_worked', 'payrolls.hours_worked', 'payrolls.extra_hours',
+            'payrolls.total_salary', 'payrolls.date', 'employees.id as employee_id', 'public_works.id as public_work_id',
+            'public_works.name AS public_work', 'payrolls.comments')
+            ->join('employees', 'employees.id', 'payrolls.employee_id')
+            ->join('public_works', 'public_works.id', 'payrolls.public_work_id')
+            ->whereBetween('payrolls.date', [$start, $end . ' 23:59:59'])->get();
+
+    }
 
     public function clonar(Request $request, Payroll $payroll)
     {

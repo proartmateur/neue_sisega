@@ -30,9 +30,9 @@ class PayrollExport implements WithMultipleSheets
     public function sheets(): array
     {
         return [
-            new PyrollGeneralSheet('General', $this->general['render'], $this->general['count']),
-            new PyrollGeneralSheet('Empleados',$this->empleados['render'], $this->empleados['count']),
-            new PyrollGeneralSheet('Destajistas',$this->destajistas['render'], $this->destajistas['count']),
+            new PayrollGeneralSheet('General', $this->general['render'], $this->general['count']),
+            new PayrollGeneralSheet('Empleados',$this->empleados['render'], $this->empleados['count']),
+            new PayrollGeneralSheet('Destajistas',$this->destajistas['render'], $this->destajistas['count']),
         ];
     }
 }

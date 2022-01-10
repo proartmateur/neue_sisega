@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PyrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithStyles, WithColumnFormatting
+class PayrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithStyles, WithColumnFormatting
 {
     private $_title;
     private $data;
@@ -37,9 +37,9 @@ class PyrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithSt
             'A' => '@',
             'B' => '"$"#,##0.00_-',
             'C' => '"$"#,##0.00_-',
-            'D' => '"$"#,##0.00_-',
-            'E' => '"$"#,##0.00_-',
-            'F' => '"$"#,##0.00_-',
+            'D' => '@',
+            'E' => '@',
+            'F' => '@',
             'G' => '@',
             'H' => '@',
             'I' => '@',
@@ -56,7 +56,7 @@ class PyrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithSt
         $sheet->mergeCells('A1:N1');
         $sheet->mergeCells('A2:B2');
         $sheet->mergeCells('C2:E2');
-        $sheet->mergeCells('G2:L2');
+        $sheet->mergeCells('F2:L2');
 
         $sheet->getRowDimension(2)->setRowHeight(50);
         for($i = 5; $i < $this->count_data + 5; $i++ ){
@@ -67,7 +67,7 @@ class PyrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithSt
             'A1' => ['font' => ['bold' => true, 'size' => 14], 'alignment' => ['horizontal' => 'left']],
             'A2' => ['font' => ['bold' => true, 'size' => 20], 'alignment' => ['horizontal' => 'center']],
             'C2' => ['font' => ['bold' => true, 'size' => 20], 'alignment' => ['horizontal' => 'center']],
-            'G2' => ['font' => ['bold' => true, 'size' => 20], 'alignment' => ['horizontal' => 'center']],
+            'F2' => ['font' => ['bold' => true, 'size' => 20], 'alignment' => ['horizontal' => 'left']],
 
             'A4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'left']],
             'B4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
@@ -79,8 +79,8 @@ class PyrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithSt
             'H4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
             'I4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
             'J4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
-            'K4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
-            'L4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center']],
+            'K4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'left']],
+            'L4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'left']],
             'M4' => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'left']],
 
             'A' => ['alignment' => ['horizontal' => 'left', 'vertical' => 'center']],
@@ -93,9 +93,9 @@ class PyrollGeneralSheet implements FromArray, WithTitle, ShouldAutoSize, WithSt
             'H' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
             'I' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
             'J' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
-            'K' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
-            'L' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
-            'M' => ['alignment' => ['horizontal' => 'left', 'vertical' => 'center']],
+            'K' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'left']],
+            'L' => ['alignment' => ['horizontal' => 'center', 'vertical' => 'left']],
+            'M' => ['alignment' => ['horizontal' => 'left', 'vertical' => 'left']],
 
         ];
     }
