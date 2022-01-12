@@ -83,11 +83,10 @@ class EmployeesController extends Controller
         $error_msg = "";
         if($duplicated['existents'] > 0) {
             $error_msg = $this->duplicatedEmployeeErrorMessage($duplicated);
+            var_dump($duplicated);
+            return Redirect::back()->with(['creation_error' => $error_msg]);;
         }
-        var_dump($duplicated);
-        //Session::flash('sucess',$error_msg);
-        return Redirect::back()->with(['creation_error' => $error_msg]);;
-        return 1;
+
 
         //endregion
 
