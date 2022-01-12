@@ -2,7 +2,7 @@
 
 <style>
     .hide {
-        display:none;
+        display: none;
     }
 </style>
 
@@ -38,39 +38,55 @@
             </div>
         </div>
         {!! Form::open(['route'=>'employees.store','method'=>'POST','files' => true, 'enctype'=>'multipart/form-data', 'class'=>'m-form m-form--fit m-form--label-align-right']) !!}
-            <div class="m-portlet m-portlet--tab">
-                <div class="m-portlet__body">
-                    <div class="form-group m-form__group row">
-                        <div class="col-2"></div>
-                        <div class="col-lg-5">
-                            <span  style="color: red" class="required-val">* </span>
-                            {!! Form::label('Tipo') !!}
-                            {!! Form::select('type',['1' => 'Empleado', '2' => 'Destajista'], null,['class'=>'form-control', 'placeholder'=>'Seleccione un tipo', 'id'=>'type', 'onchange'=>"typeSelected()"])!!}
-                        </div>
+        <div class="m-portlet m-portlet--tab">
+
+            <div class="m-portlet__body">
+                <div class="row">
+                    <div class="col-2">
                     </div>
 
-                    <fieldset id="employee">
-                        @include('employees.form')
-                    </fieldset>
-
-                    <fieldset id="pieceworker" disabled="disabled" class="hide">
-                        <input type="hidden" name="imss" value="0" id="imss">
-
-                        @include('employees.pieceworker_form')
-                    </fieldset>
+                    <div class="col-lg-5">
+                        <?php $creation_error = Session::get('creation_error'); ?>
+                        @if($creation_error != "")
+                                <div class="alert alert-danger" role="alert">
+                                    {{ $creation_error }}
+                                </div>
+                        @endif
+                    </div>
                 </div>
-                <div class="m-portlet__foot m-portlet__foot--fit">
-                    <div class="m-form__actions">
-                        <div class="row">
-                            <div class="col-2"></div>
-                            <div class="col-10">
-                                <button type="submit" class="btn btn-success">Guardar</button>
-                                <a  class="btn btn-secondary" href="{{URL::route('employees.index')}}">Cancelar</a>
-                            </div>
+                <div class="form-group m-form__group row">
+                    <div class="col-2">
+
+                    </div>
+                    <div class="col-lg-5">
+                        <span style="color: red" class="required-val">* </span>
+                        {!! Form::label('Tipo') !!}
+                        {!! Form::select('type',['1' => 'Empleado', '2' => 'Destajista'], null,['class'=>'form-control', 'placeholder'=>'Seleccione un tipo', 'id'=>'type', 'onchange'=>"typeSelected()"])!!}
+                    </div>
+                </div>
+
+                <fieldset id="employee">
+                    @include('employees.form')
+                </fieldset>
+
+                <fieldset id="pieceworker" disabled="disabled" class="hide">
+                    <input type="hidden" name="imss" value="0" id="imss">
+
+                    @include('employees.pieceworker_form')
+                </fieldset>
+            </div>
+            <div class="m-portlet__foot m-portlet__foot--fit">
+                <div class="m-form__actions">
+                    <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-10">
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                            <a class="btn btn-secondary" href="{{URL::route('employees.index')}}">Cancelar</a>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         {!!Form::close() !!}
     </div>
 @endsection
@@ -80,7 +96,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.js"></script>
     <script type="text/javascript">
-        $(document).ready(function(){
+        $(document).ready(function () {
             $('#listMenu').find('.start').removeClass('start');
             $('#liEmployees').addClass('start');
 
@@ -94,21 +110,21 @@
             var employee = document.getElementById("employee");
             var pieceworker = document.getElementById("pieceworker");
 
-            if(type !== ''){
-                if(type==="1"){
+            if (type !== '') {
+                if (type === "1") {
                     $("#employee").prop('disabled', false);
                     $("#pieceworker").prop('disabled', true);
 
                     employee.classList.remove('hide');
                     pieceworker.classList.add('hide');
-                }else{
+                } else {
                     $("#employee").prop('disabled', true);
                     $("#pieceworker").prop('disabled', false);
 
                     employee.classList.add('hide');
                     pieceworker.classList.remove('hide');
                 }
-            }else{
+            } else {
                 $("#employee").prop('disabled', true);
                 $("#pieceworker").prop('disabled', true);
 
