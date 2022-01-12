@@ -41,6 +41,7 @@ class EmployeesController extends Controller
     public function create()
     {
         if(Auth::user()->role==1){
+
             return view('employees.create');
         }else{
             return Redirect('/employees');
@@ -55,6 +56,7 @@ class EmployeesController extends Controller
      */
     public function store(EmployeesRequest $request)
     {
+
         $imss = '';
         if(isset($request['imss'])){
             if($request['imss']=='on'){
@@ -65,6 +67,30 @@ class EmployeesController extends Controller
         }else{
             $imss = 0;
         }
+
+        //region Validar
+
+        $employee = [
+            'name' => $request->input('name'),
+            'curp' => $request->input('curp'),
+            'cell_phone' => $request->input('cell_phone'),
+            'birthdate' => $request->input('birthdate'),
+            'clabe' => $request->input('clabe')
+        ];
+
+        $existent_filtered = $this->findExistentEmployeesDb($employee);
+        $duplicated = $this->findDuplicatedEmployee($employee, $existent_filtered);
+        $error_msg = "";
+        if($duplicated['existents'] > 0) {
+            $error_msg = $this->duplicatedEmployeeErrorMessage($duplicated);
+        }
+        var_dump($duplicated);
+        //Session::flash('sucess',$error_msg);
+        return Redirect::back()->with(['creation_error' => $error_msg]);;
+        return 1;
+
+        //endregion
+
 
         $employee = new Employee();
 
@@ -103,6 +129,102 @@ class EmployeesController extends Controller
 
         Session::flash('success','Empleado creado correctamente.');
         return Redirect('/employees');
+    }
+
+
+    private function duplicatedEmployeeErrorMessage(array $duplicated)
+    {
+        $fields = $duplicated['fields'];
+        $total = $duplicated['existents'];
+        $result = "Existen $total empleados con la misma información en los siguientes campos: ";
+
+        foreach ($fields as $field) {
+            $fname = $this->renameEmployeeEfieldForDisplay($field);
+            $result .= "$fname, ";
+        }
+        $result = rtrim($result, ', ');
+        return $result;
+    }
+
+    private function renameEmployeeEfieldForDisplay(string $field)
+    {
+        $result = "";
+        switch ($field) {
+            case 'name':
+                $result = 'Nombre';
+                break;
+
+            case 'curp':
+                $result = 'CURP';
+                break;
+
+            case 'cell_phone':
+                $result = 'Celular';
+                break;
+
+            case 'birthdate':
+                $result = 'Fecha De Nacimiento';
+                break;
+
+            case 'clabe':
+                $result = 'CLABE';
+                break;
+
+            default:
+                $result = $field;
+                break;
+        }
+        return $result;
+    }
+
+    private function findDuplicatedEmployee(array $employee, $existents)
+    {
+        $total = count($existents);
+        if ($total === 0) {
+            return [
+                'existents' => 0,
+                'fields' => []
+            ];
+        }
+        $fields = [];
+        $total = 0;
+        foreach ($existents as $existent) {
+            $other = $this->employeeToArray($existent);
+            $fields = array_merge($fields, $this->compareEmployees($employee, $other));
+            if(count($fields) > 0){
+                $total += 1;
+            }
+        }
+        return [
+            'existents' => $total,
+            'fields' => array_unique($fields)
+        ];
+    }
+
+    private function findExistentEmployeesDb(array $employee)
+    {
+        return Employee::where('name', 'like', '%' . $employee['name'] . '%')
+            ->orWhere('curp', 'like', '%' . $employee['curp'] . '%')
+            ->orWhere('birthdate', 'like', '%' . $employee['birthdate'] . '%')
+            ->orWhere('cell_phone', 'like', '%' . $employee['cell_phone'] . '%')
+            ->get();
+    }
+
+    private function compareEmployees(array $employee, array $other)
+    {
+        $repeated_fields = [];
+
+        foreach ($employee as $key => $value) {
+            if ($employee[$key] === $other[$key]) {
+                $repeated_fields[] = $key;
+            }
+        }
+        return $repeated_fields;
+    }
+
+    private function employeeToArray(Employee $employee)
+    {
+        return $employee->toArray();
     }
 
     /**

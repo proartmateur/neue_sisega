@@ -72,6 +72,7 @@ class UsersController extends Controller
     {
         $user = new User();
 
+
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         $user->password= Hash::make($request->input('password'));
@@ -95,7 +96,7 @@ class UsersController extends Controller
         //
     }
 
-    
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -140,7 +141,7 @@ class UsersController extends Controller
 
         Session::flash('message', 'El usuario ha sido actualizado correctamente');
         return redirect('/users');
-        
+
     }
 
     /**

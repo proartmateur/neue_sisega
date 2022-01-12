@@ -83,33 +83,33 @@
             }
         </style>
         <?php /* 'route'=>'payrolls.clonar' */?>
-        
-        
+
+
         @foreach($query as $q)
          {!! Form::model($q, ['route'=>'payrolls.edicion.masiva.guarda.una.nomina', 'method'=>'POST', 'id'=>'form-clonar-'.$q->id ]) !!}
          <?php /*{{method_field('PUT')}}*/?>
 
-    
+
         <div class="nominas-juntas">
             <div class="row linea-campos-nomina">
                 <div class="col-xs-12 col-md-6">
-                    
+
                     <div class="aIcon foto" style="background-image: url('https://www.sisega.app/{{$q->foto}}')"></div>
                     <div class="nj-nombre">{!!$q->name_empleado!!} <br> {!!($q->tipo_empleado == 1)?'Empleado':'Destajista'!!}</div>
                     <input class="form-control" name="id" type="hidden" value="{!! $q->id !!}">
                     <input class="form-control" name="employee_id" type="hidden" value="{!! $q->employee_id !!}">
-                    
+
                     <input class="form-control" name="tipo_empleado" type="hidden" value="{!! $q->tipo_empleado !!}">
                     <input class="form-control" name="salario" id="salario_{!! $q->id !!}" type="hidden" value="{{$q->salary_week}}">
                 </div>
-            </div> 
+            </div>
             <div class="row linea-campos-nomina">
                 <div class="col-xs-12 col-md-5">
                      <span style="color: red" class="required-val">* </span>Obra <br>
 
                       {!! Form::select('public_work_id', $public_works, null, ['class'=>'form-control', 'placeholder'=>'Seleccione una obra', 'id'=>'public_work_id'])!!}
                 </div>
-            </div> 
+            </div>
 
 
              <div class="row">
@@ -121,8 +121,8 @@
                             <span style="color: red" class="required-val">* </span> Fecha Del Pago <br>
                             <input class="form-control" name="date" type="date" value="{!! $q->date !!}">
                         </div>
-                        
-                       
+
+
                         <div class="col-xs-12 col-md-3">
                             <span style="color: red" class="required-val">* </span> Días Trabajados <br>
                             <input class="form-control days_worked" id="days_worked_{!!$q->id!!}" name="days_worked" type="number" value="{!! $q->days_worked !!}"  data-formid="{!!$q->id!!}">
@@ -135,7 +135,7 @@
                             Horas Extras <br>
                             <input class="form-control extra_hours" id="extra_hours_{!!$q->id!!}" name="extra_hours" type="number" value="{!! $q->extra_hours !!}"  data-formid="{!!$q->id!!}">
                         </div>
-                       
+
 
                     </div>
                     <div class="row linea-campos-nomina">
@@ -144,29 +144,30 @@
                             <textarea class="form-control nj-commentarios" name="comments" cols="50" rows="10">{!! $q->comments !!}</textarea>
                         </div>
                         <div class="col-xs-12 col-md-3">
-                      
-                            Bonos <br>
-                            <?php 
 
+                            <!--Bonos <br>-->
+                            <?php
+
+                            /*
 
                             $payroll2 = \App\Payroll::find($q->id);
 
                             $total_bonus = 0;
-            
+
                             $bonustiene = '';
                             $bonus_uniforme = '';
                             $bonus_asistencia = '';
 
                             foreach ($payroll2->Bonuses as $bonus){
                                 $total_bonus += (int)$bonus->amount;
-                                
+
                                 if($bonus->id == 1){
                                     $bonus_uniforme = 'checked';
                                 }
                                 else{
                                      $bonus_asistencia = 'checked';
                                 }
-                                
+
                             }
 
 
@@ -177,25 +178,27 @@
 
 
                             foreach ($bonus_todos as $b){
-                                
+
                                 if($b->id == 1){
-                                   
-                                    
+
+
                                     echo $b->name.' &nbsp;<input type="checkbox" id="bonus-1-'.$q->id.'" value="1" class="abonuscheck" data-payrollid="'.$q->id.'" '.$bonus_uniforme.' name="bono_uniforme" data-valor="'.$b->amount.'"><br><br>';
                                 }
                                 else{
-                                   
-                                     
+
+
                                     echo $b->name.' <input type="checkbox" id="bonus-2-'.$q->id.'" value="2" class="abonuscheck" data-payrollid="'.$q->id.'" '.$bonus_asistencia.'  name="bono_asistencia" data-valor="'.$b->amount.'">';
                                 }
-                                 
-                            } ?>
-                       
+
+                            }
+                            */
+                            ?>
+
                         </div>
                         <div class="col-xs-12 col-md-3">
                             Total A Pagar <br>
                             <?php echo  "<div id='total-txt-".$q->id."'>$".number_format($q->total_salary,'2','.',',')."</div>";?>
-                             <br><br> 
+                             <br><br>
                         </div>
                     </div>
                 </div>
@@ -206,21 +209,21 @@
                             <span style="color: red" class="required-val">* </span> Fecha Del Pago <br>
                             <input class="form-control" name="date" type="date" value="{!! $q->date !!}">
                         </div>
-                        
-                       
+
+
                         <div class="col-xs-12 col-md-3">
                          <span style="color: red" class="required-val">* </span> Total A Pagar <br>
                             <input class="form-control" step=".01" id="total_salary_{!!$q->id!!}" name="total_salary" type="number" value="{!! $q->total_salary !!}">
-                            
-                           
+
+
                         </div>
                         <div class="col-xs-12 col-md-3">
-                           
+
                         </div>
                         <div class="col-xs-12 col-md-3">
-                           
+
                         </div>
-                       
+
 
                     </div>
                     <div class="row linea-campos-nomina">
@@ -231,7 +234,7 @@
                         <div class="col-xs-12 col-md-3">
                         </div>
                         <div class="col-xs-12 col-md-3">
-                           
+
                         </div>
                     </div>
                 </div>
@@ -247,13 +250,13 @@
                         </div>
                     </div>
                 </div>
-                            
-                           
+
+
             </div>
         </div>
          {!!Form::close() !!}
         @endforeach
-        
+
 </div>
 @endsection
 
@@ -295,7 +298,7 @@
             $('#total-txt-'+id).html(format_total);
             $('#total_salary_'+id).val(total);
         }
-       
+
         $(document).ready(function(){
 
              $(".days_worked").on("keyup keydown change",function(event){
@@ -312,14 +315,14 @@
             });
 
 
-          
+
 
             $(document).on('click','.abonuscheck', function(){
                 let aPayrollid = $(this).data('payrollid');
                 let aValor = $(this).val();
                 let aPrecio = $(this).data('valor');
                 let aChecado = 0;
-                
+
                 if ($(this).is(':checked')) {
                     aChecado = 1;
                 }
@@ -348,7 +351,7 @@
                  //alert('Datos serializados: '+valores);
 
                 //$('#form-clonar-'+formid).submit();
-                
+
 
                  $.ajax({
                     url: '{{route('payrolls.edicion.masiva.guarda.una.nomina')}}',
@@ -366,18 +369,18 @@
                             $('#btn-guardar-clon-'+formid).css('display','block');
                             $('#mensaje-ajax-'+formid).html('Ocurrio un error, recargue y vuelva a intentar.');
                         }
-                       
 
 
 
-                        
-                      
+
+
+
                         /*if(data[0] == 1){
                             $('#bonostotal-'+aPayrollid).html(data[1]);
                             $('#sueldototal-'+aPayrollid).html(data[2]);
                         }*/
-                        
-                        
+
+
                     }
                  });
             });
