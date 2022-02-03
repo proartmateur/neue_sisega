@@ -58,7 +58,7 @@ class PayrollRow
         return [
             'Nombre Completo',
             'Sueldo',
-            //'Horas extra',
+            'Horas extra',
             //'Bonos',
             'Total',
             'Obra',
@@ -76,7 +76,7 @@ class PayrollRow
         return [
             $this->empleado,
             $this->sueldo,
-            //$this->horas_extra,
+            $this->horas_extra,
             //$this->bonos,
             $this->total,
             $this->obra,

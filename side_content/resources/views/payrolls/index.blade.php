@@ -169,9 +169,9 @@
                         <th>Nombre</th>
                         <th>Sueldo</th>
                         <th>Hrs extras</th>
-                        <th>Bono $</th>
+{{--                        <th>Bono $</th>--}}
                         <th>Total</th>
-                        <th>Bonos</th>
+{{--                        <th>Bonos</th>--}}
                         <th>Obra</th>
                         <th>Tipo</th>
 
@@ -346,7 +346,7 @@
 
                 if(ok == 0){
 
-                     var urledicion = 'https://www.sisega.app/payrolls/edicion-masiva/'+range.replace(/ /g, "")+'/'+public_work_id;
+                     var urledicion = '/payrolls/edicion-masiva/'+range.replace(/ /g, "")+'/'+public_work_id;
                      //https://www.sisega.app/payrolls/edicion-masiva/07-11-2021/07-11-2021/0
 
                      window.location.href = urledicion;
