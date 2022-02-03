@@ -169,9 +169,9 @@
                         <th>Nombre</th>
                         <th>Sueldo</th>
                         <th>Hrs extras</th>
-                        <th>Bono $</th>
+{{--                        <th>Bono $</th>--}}
                         <th>Total</th>
-                        <th>Bonos</th>
+{{--                        <th>Bonos</th>--}}
                         <th>Obra</th>
                         <th>Tipo</th>
 
