@@ -70,22 +70,22 @@ class EmployeesController extends Controller
 
         //region Validar
 
-        $employee = [
-            'name' => $request->input('name'),
-            'curp' => $request->input('curp'),
-            'cell_phone' => $request->input('cell_phone'),
-            'birthdate' => $request->input('birthdate'),
-            'clabe' => $request->input('clabe')
-        ];
-
-        $existent_filtered = $this->findExistentEmployeesDb($employee);
-        $duplicated = $this->findDuplicatedEmployee($employee, $existent_filtered);
-        $error_msg = "";
-        if($duplicated['existents'] > 0) {
-            $error_msg = $this->duplicatedEmployeeErrorMessage($duplicated);
-            var_dump($duplicated);
-            return Redirect::back()->with(['creation_error' => $error_msg]);;
-        }
+//        $employee = [
+//            'name' => $request->input('name'),
+//            'curp' => $request->input('curp'),
+//            'cell_phone' => $request->input('cell_phone'),
+//            'birthdate' => $request->input('birthdate'),
+//            'clabe' => $request->input('clabe')
+//        ];
+//
+//        $existent_filtered = $this->findExistentEmployeesDb($employee);
+//        $duplicated = $this->findDuplicatedEmployee($employee, $existent_filtered);
+//        $error_msg = "";
+//        if($duplicated['existents'] > 0) {
+//            $error_msg = $this->duplicatedEmployeeErrorMessage($duplicated);
+//            var_dump($duplicated);
+//            return Redirect::back()->with(['creation_error' => $error_msg]);;
+//        }
 
 
         //endregion
