@@ -169,9 +169,9 @@
                         <th>Nombre</th>
                         <th>Sueldo</th>
                         <th>Hrs extras</th>
-{{--                        <th>Bono $</th>--}}
+                        {{-- <th>Bono $</th> --}}
                         <th>Total</th>
-{{--                        <th>Bonos</th>--}}
+                        {{-- <th>Bonos</th> --}}
                         <th>Obra</th>
                         <th>Tipo</th>
 
@@ -181,6 +181,7 @@
                     </tr>
                     </thead>
                     <tbody>
+
                     {{--
                     @foreach($payrolls as $payroll)
                         <tr class="odd gradeX">
@@ -439,7 +440,8 @@
                     "confirmButtonClass": "btn btn-secondary m-btn m-btn--wide",
                     "confirmButtonText": "Aceptar"
                 });
-            }else{
+            }
+            else{
                 $.ajax({
                     url:'/payrolls/search_payrolls',
                     headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
@@ -490,7 +492,9 @@
                             }
 
                             document.getElementById("total-footer").innerHTML = "Total: 0";
-                        }else{
+                        }
+                        else{
+
                             $('#payrolls-table').DataTable().destroy();
 
                             if(role === 1 || role === 2){
@@ -502,9 +506,9 @@
                                             {data:"full_name"},
                                             {data:"sueldo"},
                                             {data:"extras"},
-                                            {data:"bono"},
+                                            //{data:"bono"},
                                             {data:"total_salary"},
-                                             {data:"htmlbonus"},
+                                             //{data:"htmlbonus"},
                                              {data:"public_work"},
                                              {data:"type"},
                                             {data:"id", render: function (data, type, row) {
